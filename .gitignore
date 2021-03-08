@@ -2,5 +2,3 @@ app/config
 app/config-s
 app/config-l
 tmp
-
--f .git-ftp-ignore
