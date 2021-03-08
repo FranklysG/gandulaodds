@@ -4,17 +4,6 @@ use Adianti\Widget\Form\TDate;
 
 class AppUtil
 {
-
-    public static function guid(){
-        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-            mt_rand( 0, 0xffff ),
-            mt_rand( 0, 0x0fff ) | 0x4000,
-            mt_rand( 0, 0x3fff ) | 0x8000,
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
-        );
-    }
-    
     public static function objectInStdClass($obj)
     {
         $array = $obj->toArray();
@@ -311,41 +300,21 @@ class AppUtil
         return $localizacao;
     }
 
-    // fazendo o cu da url            
-    public static function url_get_contents ($url, $token = null) {
-        $header = [
-            "authorization: Bearer $token",
-            "content-type: application/json"
-        ];
-        
-        if (!function_exists('curl_init'))
-            die('CURL is not installed!');
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        if(!is_null($token))
-            curl_setopt($ch, CURLOPT_HTTPHEADER , $header);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        return json_decode($output);
-    }
-    
-    public static function rDiaSemana($dia = null)
+    public static function rDiaSemana($dia = '')
     {
         $itens_dia = array();
-        $itens_dia['1'] = "Domingo";
-        $itens_dia['2'] = "Segunda";
-        $itens_dia['3'] = "Terça";
-        $itens_dia['4'] = "Quarta";
-        $itens_dia['5'] = "Quinta";
-        $itens_dia['6'] = "Sexta";
-        $itens_dia['7'] = "Sabado";
-        $itens_dia['8'] = "Todo dia";
+        $itens_dia['0'] = "Domingo";
+        $itens_dia['1'] = "Segunda";
+        $itens_dia['2'] = "Terça";
+        $itens_dia['3'] = "Quarta";
+        $itens_dia['4'] = "Quinta";
+        $itens_dia['5'] = "Sexta";
+        $itens_dia['6'] = "Sabado";
 
-        if (!is_null($dia)) {
+        if ($dia) {
             return $itens_dia[$dia];
         }
+
         return $itens_dia;
     }
 
@@ -398,5 +367,29 @@ class AppUtil
            }
         }
         return $novo_texto; // Retorna o valor formatado
+     }
+
+     public static function paste_another_folder($img_name, $sub_folder){
+        $source_file   = 'tmp/'.$img_name;
+        $target_path   = 'tmp/'.$sub_folder;
+        $target_file   =  $target_path . '/'.$img_name;
+        
+        if (file_exists($source_file))
+        {
+            if (!file_exists($target_path))
+            {
+                if (!@mkdir($target_path, 0777, true))
+                {
+                    throw new Exception(_t('Permission denied'). ': '. $target_path);
+                }
+            }
+            
+            // if the user uploaded a source file
+            if (file_exists($target_path))
+            {
+                // move to the target directory
+                rename($source_file, $target_file);
+            }
+        }
      }
 }

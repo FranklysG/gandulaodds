@@ -126,13 +126,6 @@ class Convert
         return $date->format('d/m/Y');
     }
 
-    // de datas vindas do firebase para dates US
-    public static function toDateFireBaseToUs($value)
-    {
-        $date = new DateTime($value);
-        return $date->format('Y-m-d');
-    }
-
     public static function toDatTimeUS($value)
     {
         $date = new DateTime($value);
@@ -143,6 +136,18 @@ class Convert
     {
         $date = new DateTime($value);
         return $date->format('d/m/Y H:i:s');
+    }
+    
+    public static function toDayMonthString($value)
+    {
+        $date = new DateTime($value);
+        return $date->format('d M');
+    }
+    
+    public static function toYear($value)
+    {
+        $date = new DateTime($value);
+        return $date->format('Y');
     }
 
     // pegar o mes o dia ou ano da data us
@@ -175,8 +180,8 @@ class Convert
 
     public static function toWithoutAccent($str)
     {
-        $a = array('/(à|á|â|ã|ä|å|æ)/','/(è|é|ê|ë)/','/(ì|í|î|ï)/','/(ð|ò|ó|ô|õ|ö|ø)/','/(ù|ú|û|ü)/','/ç/','/þ/','/ñ/','/ß/','/(ý|ÿ)/','/[^a-z0-9_ -.]/s');
-        $b = array('a','e','i','o','u','c','d','n','s','y','-','');
+        $a = array('/(à|á|â|ã|ä|å|æ)/','/(è|é|ê|ë)/','/(ì|í|î|ï)/','/(ð|ò|ó|ô|õ|ö|ø)/','/(ù|ú|û|ü)/','/ç/','/þ/','/ñ/','/ß/','/(ý|ÿ)/','/[^a-z0-9_ -.]/s','/ /');
+        $b = array('a','e','i','o','u','c','d','n','s','y','-','-');
         return trim(trim(trim(preg_replace('/-{2,}/s', '-', preg_replace($a, $b, strtolower($str)))), '_'), '-');
     }
 
@@ -248,5 +253,4 @@ class Convert
         }
  
     }
-
 }
