@@ -14,4 +14,4 @@ pipelines:
             script:
               - apt-get update
               - apt-get -qq install git-ftp
-              - git ftp init --user $FTP_USERNAME --passwd $FTP_PASSWORD ftp://192.185.176.152/api.gandulaodds.com
+              - git ftp push --user $FTP_USERNAME --passwd $FTP_PASSWORD ftp://192.185.176.152/api.gandulaodds.com
