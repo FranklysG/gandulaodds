@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
+  <menuitem label="Fotebol">
+    <icon>fas:volleyball-ball fa-fw</icon>
+    <menu>
+      <menuitem label="Campeonatos">
+        <action>FootballLeagueList</action>
+        <icon>fas:arrow-alt-circle-right fa-fw</icon>
+      </menuitem>
+      <menuitem label="Jogos">
+        <action>SoccerMatchList</action>
+        <icon>fas:arrow-alt-circle-right fa-fw</icon>
+      </menuitem>
+      <menuitem label="Times">
+        <action>SoccerTeamList</action>
+        <icon>fas:arrow-alt-circle-right fa-fw</icon>
+      </menuitem>
+      <menuitem label="Tabela">
+        <action>SoccerTableList</action>
+        <icon>fas:arrow-alt-circle-right fa-fw</icon>
+      </menuitem>
+    </menu>
+  </menuitem>
+  <menuitem label="Registros">
+    <icon>fas:pepper-hot fa-fw</icon>
+    <menu>
+      <menuitem label="Estados">
+        <action>StateList</action>
+        <icon>fas:arrow-alt-circle-right fa-fw</icon>
+      </menuitem>
+      <menuitem label="Paises">
+        <action>CountryList</action>
+        <icon>fas:arrow-alt-circle-right fa-fw</icon>
+      </menuitem>
+    </menu>
+  </menuitem>
   <menuitem label="_t{Administration}">
     <icon>fas:home fa-fw</icon>
     <menu>
@@ -45,27 +79,6 @@
       </menuitem>
     </menu>
   </menuitem>
-  <menuitem label="_t{Documents}">
-    <icon>far:file-alt fa-fw</icon>
-    <menu>
-      <menuitem label="_t{Send document}">
-        <action>SystemDocumentUploadForm</action>
-        <icon>fas:arrow-alt-circle-right fa-fw</icon>
-      </menuitem>
-      <menuitem label="_t{My documents}">
-        <action>SystemDocumentList</action>
-        <icon>fas:arrow-alt-circle-right fa-fw</icon>
-      </menuitem>
-      <menuitem label="_t{Shared with me}">
-        <action>SystemSharedDocumentList</action>
-        <icon>fas:arrow-alt-circle-right fa-fw</icon>
-      </menuitem>
-      <menuitem label="_t{Categories}">
-        <action>SystemDocumentCategoryFormList</action>
-        <icon>fas:arrow-alt-circle-right fa-fw</icon>
-      </menuitem>
-    </menu>
-  </menuitem>
   <menuitem label="Logs">
     <icon>fas:desktop fa-fw</icon>
     <menu>
@@ -96,19 +109,6 @@
       <menuitem label="Session dump">
         <action>SystemSessionDumpView</action>
         <icon>fas:arrow-alt-circle-right fa-fw</icon>
-      </menuitem>
-    </menu>
-  </menuitem>
-  <menuitem label="Common pages">
-    <menu>
-      <menuitem label="Common page 1">
-        <action>CommonPage</action>
-      </menuitem>
-      <menuitem label="Common page 2">
-        <action>CommonPage</action>
-      </menuitem>
-      <menuitem label="Common page 3">
-        <action>CommonPage</action>
       </menuitem>
     </menu>
   </menuitem>
