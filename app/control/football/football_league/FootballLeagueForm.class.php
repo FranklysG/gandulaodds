@@ -29,6 +29,14 @@ class FootballLeagueForm extends TPage
         $shield = new TFile('shield');
         $shield->setAllowedExtensions( ['png', 'jpg', 'jpeg'] );
         $continent = new TEntry('continent');
+        $status = new TCombo('status');
+        $status->addItems([
+            '0' => 'Em espera',
+            '1' => 'Iniciado',
+            '2' => 'Suspenso',
+            '3' => 'Finalizado',
+            '4' => 'Cancelado'
+        ]);
         $created_at = new TDate('created_at');
         $updated_at = new TDate('updated_at');
 

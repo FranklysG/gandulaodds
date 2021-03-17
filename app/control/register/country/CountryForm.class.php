@@ -89,7 +89,7 @@ class CountryForm extends TPage
             $this->form->setData($data); // fill form data
             TTransaction::close(); // close the transaction
             
-            new TMessage('info', AdiantiCoreTranslator::translate('Record saved'), new TAction(['CoutryList', 'onReload']));
+            new TMessage('info', AdiantiCoreTranslator::translate('Record saved'), new TAction(['CountryList', 'onReload']));
         }
         catch (Exception $e) // in case of exception
         {

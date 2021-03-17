@@ -15,8 +15,8 @@
         <action>SoccerTeamList</action>
         <icon>fas:arrow-alt-circle-right fa-fw</icon>
       </menuitem>
-      <menuitem label="Tabela">
-        <action>SoccerTableList</action>
+      <menuitem label="Tabela de odds">
+        <action>ViewTableOddList</action>
         <icon>fas:arrow-alt-circle-right fa-fw</icon>
       </menuitem>
     </menu>

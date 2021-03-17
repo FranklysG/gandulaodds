@@ -33,9 +33,16 @@ class SoccerMatchList extends TPage
         $soccer_team_master_id->setMinLength(1);
         $soccer_team_visiting_id = new TDBUniqueSearch('soccer_team_visiting_id','app','SoccerTeam','id','slug');
         $soccer_team_visiting_id->setMinLength(1);
-        $hour = new TDateTime('hour');
-        $date_game = new TDate('date_game');
+        $hour = new TTime('hour');
+        $date = new TDate('date');
         $status = new TCombo('status');
+        $status->addItems([
+            '0' => 'Em espera',
+            '1' => 'Iniciado',
+            '2' => 'Suspenso',
+            '3' => 'Finalizado',
+            '4' => 'Cancelado'
+        ]);
         $created_at = new TDate('created_at');
         $updated_at = new TDate('updated_at');
 
@@ -45,7 +52,7 @@ class SoccerMatchList extends TPage
                                 [ new TLabel('Time Mandante'), $soccer_team_master_id ],
                                 [ new TLabel('Time Visitante'), $soccer_team_visiting_id ],
                                 [ new TLabel('Horario '), $hour ],
-                                [ new TLabel('Data'), $date_game ],
+                                [ new TLabel('Data'), $date ],
                                 [ new TLabel('Status'), $status ],
                                 [],
                                 [ new TLabel('Criado em'), $created_at ],
@@ -69,30 +76,72 @@ class SoccerMatchList extends TPage
         
 
         // creates the datagrid columns
-        $column_id = new TDataGridColumn('id', 'Id', 'right');
-        $column_football_league_id = new TDataGridColumn('football_league->slug', 'Liga', 'right');
-        $column_soccer_team_master_id = new TDataGridColumn('soccer_team_master->slug', 'Mandante', 'right');
-        $column_soccer_team_visiting_id = new TDataGridColumn('soccer_team_visiting->slug', 'Visitante', 'right');
-        $column_hour = new TDataGridColumn('hour', 'Horario ', 'left');
-        $column_date_game = new TDataGridColumn('date_game', 'Data', 'left');
-        $column_score_master = new TDataGridColumn('score_master', 'P Mand', 'right');
-        $column_score_visiting = new TDataGridColumn('score_visiting', 'P Visit', 'right');
-        $column_status = new TDataGridColumn('status', 'Status', 'right');
-        $column_created_at = new TDataGridColumn('created_at', 'Criado em', 'left');
-        $column_updated_at = new TDataGridColumn('updated_at', 'Ultima atualização', 'left');
+        $column_id = new TDataGridColumn('id', 'Id', 'left');
+        $column_football_league_id = new TDataGridColumn('football_league->slug', 'Liga', 'left');
+        $column_soccer_team_master_id = new TDataGridColumn('soccer_team_master->slug', 'Mandante', 'left');
+        $column_soccer_team_visiting_id = new TDataGridColumn('soccer_team_visiting->slug', 'Visitante', 'left');
+        $column_hour = new TDataGridColumn('hour', 'Horario ', 'right');
+        $column_date = new TDataGridColumn('date', 'Data', 'right');
+        $column_score_master = new TDataGridColumn('score_master', 'P Mand', 'center');
+        $column_score_visiting = new TDataGridColumn('score_visiting', 'P Visit', 'center');
+        $column_status = new TDataGridColumn('status', 'Status', 'left');
+        $column_created_at = new TDataGridColumn('created_at', 'Criado em', 'right');
+        $column_updated_at = new TDataGridColumn('updated_at', 'Ultima atualização', 'right');
 
+        $column_status->setTransformer(function($value){
+            switch ($value) {
+                case 1:
+                    $class = 'success';
+                    $label = 'Iniciado';
+                    break;
+                case 2:
+                    $class = 'warning';
+                    $label = 'Suspenso';
+                    break;
+                case 3:
+                    $class = 'danger';
+                    $label = 'Finalizado';
+                    break;
+                case 3:
+                    $class = 'danger';
+                    $label = 'Cancelado';
+                    break;
+                
+                default:
+                    $class = 'secondary';
+                    $label = 'Em espera';
+                    break;
+            }
 
+            $div = new TElement('span');
+            $div->class = "btn btn-{$class}";
+            $div->style = "text-shadow:none; font-size:12px; font-weight:bold;width:80px;";
+            $div->add($label);
+            return $div;
+        });
+
+        $column_date->setTransformer(function($value){
+            return Convert::toDateBR($value);
+        });
+        
+        $column_created_at->setTransformer(function($value){
+            return Convert::toDateBR($value);
+        });
+
+        $column_updated_at->setTransformer(function($value){
+            return Convert::toDateBR($value);
+        });
         // add the columns to the DataGrid
         // $this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_football_league_id);
         $this->datagrid->addColumn($column_soccer_team_master_id);
         $this->datagrid->addColumn($column_soccer_team_visiting_id);
         $this->datagrid->addColumn($column_hour);
-        $this->datagrid->addColumn($column_date_game);
+        $this->datagrid->addColumn($column_date);
         $this->datagrid->addColumn($column_score_master);
         $this->datagrid->addColumn($column_score_visiting);
         $this->datagrid->addColumn($column_status);
-        $this->datagrid->addColumn($column_created_at);
+        // $this->datagrid->addColumn($column_created_at);
         $this->datagrid->addColumn($column_updated_at);
 
 
@@ -165,7 +214,7 @@ class SoccerMatchList extends TPage
         TSession::setValue(__CLASS__.'_filter_soccer_team_master_id',   NULL);
         TSession::setValue(__CLASS__.'_filter_soccer_team_visiting_id',   NULL);
         TSession::setValue(__CLASS__.'_filter_hour',   NULL);
-        TSession::setValue(__CLASS__.'_filter_date_game',   NULL);
+        TSession::setValue(__CLASS__.'_filter_date',   NULL);
         TSession::setValue(__CLASS__.'_filter_score_master',   NULL);
         TSession::setValue(__CLASS__.'_filter_score_visiting',   NULL);
         TSession::setValue(__CLASS__.'_filter_status',   NULL);
@@ -196,9 +245,9 @@ class SoccerMatchList extends TPage
         }
 
 
-        if (isset($data->date_game) AND ($data->date_game)) {
-            $filter = new TFilter('date_game', 'like', "%{$data->date_game}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_date_game',   $filter); // stores the filter in the session
+        if (isset($data->date) AND ($data->date)) {
+            $filter = new TFilter('date', 'like', "%{$data->date}%"); // create the filter
+            TSession::setValue(__CLASS__.'_filter_date',   $filter); // stores the filter in the session
         }
 
 
@@ -290,8 +339,8 @@ class SoccerMatchList extends TPage
             }
 
 
-            if (TSession::getValue(__CLASS__.'_filter_date_game')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_date_game')); // add the session filter
+            if (TSession::getValue(__CLASS__.'_filter_date')) {
+                $criteria->add(TSession::getValue(__CLASS__.'_filter_date')); // add the session filter
             }
 
 

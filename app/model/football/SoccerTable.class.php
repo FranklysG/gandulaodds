@@ -10,6 +10,7 @@ class SoccerTable extends TRecord
     const IDPOLICY =  'max'; // {max, serial}
     
     
+    private $soccer_match;
     private $soccer_team;
 
     /**
@@ -18,6 +19,7 @@ class SoccerTable extends TRecord
     public function __construct($id = NULL, $callObjectLoad = TRUE)
     {
         parent::__construct($id, $callObjectLoad);
+        parent::addAttribute('soccer_match_id');
         parent::addAttribute('soccer_team_id');
         parent::addAttribute('win');
         parent::addAttribute('draw');
@@ -28,6 +30,33 @@ class SoccerTable extends TRecord
         parent::addAttribute('updated_at');
     }
 
+    
+    /**
+     * Method set_soccer_match
+     * Sample of usage: $soccer_table->soccer_match = $object;
+     * @param $object Instance of SoccerMatch
+     */
+    public function set_soccer_match(SoccerMatch $object)
+    {
+        $this->soccer_match = $object;
+        $this->soccer_match_id = $object->id;
+    }
+    
+    /**
+     * Method get_soccer_match
+     * Sample of usage: $soccer_table->soccer_match->attribute;
+     * @returns SoccerMatch instance
+     */
+    public function get_soccer_match()
+    {
+        // loads the associated object
+        if (empty($this->soccer_match))
+            $this->soccer_match = new SoccerMatch($this->soccer_match_id);
+    
+        // returns the associated object
+        return $this->soccer_match;
+    }
+    
     
     /**
      * Method set_soccer_team

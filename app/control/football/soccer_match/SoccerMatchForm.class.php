@@ -24,16 +24,31 @@ class SoccerMatchForm extends TPage
         // create the form fields
         $id = new THidden('id');
         $football_league_id = new TDBUniqueSearch('football_league_id','app','FootballLeague','id','slug');
+        $football_league_id->addValidation('Campeonato', new TRequiredValidator);
         $football_league_id->setMinLength(1);
         $soccer_team_master_id = new TDBUniqueSearch('soccer_team_master_id','app','SoccerTeam','id','slug');
+        $soccer_team_master_id->addValidation('Time Mandante', new TRequiredValidator);
         $soccer_team_master_id->setMinLength(1);
         $soccer_team_visiting_id = new TDBUniqueSearch('soccer_team_visiting_id','app','SoccerTeam','id','slug');
+        $soccer_team_visiting_id->addValidation('Time Visitante', new TRequiredValidator);
         $soccer_team_visiting_id->setMinLength(1);
-        $hour = new TDateTime('hour');
-        $date_game = new TDate('date_game');
+        $hour = new TTime('hour');
+        $hour->addValidation('Horario', new TRequiredValidator);
+        $date = new TDate('date');
+        $date->addValidation('Data Jogo', new TRequiredValidator);
         $score_master = new TEntry('score_master');
+        $score_master->addValidation('Placar Mandante', new TRequiredValidator);
         $score_visiting = new TEntry('score_visiting');
+        $score_visiting->addValidation('Placar Visitante', new TRequiredValidator);
         $status = new TCombo('status');
+        $status->addValidation('Status', new TRequiredValidator);
+        $status->addItems([
+            '0' => 'Em espera',
+            '1' => 'Iniciado',
+            '2' => 'Suspenso',
+            '3' => 'Finalizado',
+            '4' => 'Cancelado'
+        ]);
         $created_at = new TDate('created_at');
         $updated_at = new TEntry('updated_at');
 
@@ -47,20 +62,10 @@ class SoccerMatchForm extends TPage
         $row = $this->form->addFields( [ new TLabel('Placar Mandante'),$score_master ],
                                     [ new TLabel('Placar Visitante'),$score_visiting ],
                                     [ new TLabel('Horario'),$hour ],
-                                    [ new TLabel('Data do jogo'),$date_game ]);
+                                    [ new TLabel('Data do jogo'),$date ]);
         $row->layout = ['col-sm-6','col-sm-6','col-sm-6','col-sm-6'];
         $this->form->addFields( [ new TLabel('Status'),$status ] );
 
-        if (!isset($id))
-        {
-            $id->setEditable(FALSE);
-            $football_league_id->setEditable(FALSE);
-            $soccer_team_master_id->setEditable(FALSE);
-            $soccer_team_visiting_id->setEditable(FALSE);
-            $hour->setEditable(FALSE);
-            $date_game->setEditable(FALSE);
-        }
-        
         /** samples
          $fieldX->addValidation( 'Field X', new TRequiredValidator ); // add validation
          $fieldX->setSize( '100%' ); // set size
@@ -88,6 +93,7 @@ class SoccerMatchForm extends TPage
     {
         try
         {
+            
             TTransaction::open('app'); // open a transaction
             
             /**
@@ -98,11 +104,72 @@ class SoccerMatchForm extends TPage
             
             $this->form->validate(); // validate form data
             $data = $this->form->getData(); // get form data as array
-            
             $object = new SoccerMatch;  // create an empty object
             $object->fromArray( (array) $data); // load the object with data
             $object->store(); // save the object
-            
+
+            // if($data->status == '3'){
+
+                $score_table_master = SoccerTable::where('soccer_match_id','=',$data->id)->where('soccer_team_id','=',$data->soccer_team_master_id)->load();
+                $score_table_master = array_shift($score_table_master);
+                if(!$score_table_master)
+                    $score_table_master = new SoccerTable;
+                
+                $score_table_visiting = SoccerTable::where('soccer_match_id','=',$data->id)->where('soccer_team_id','=',$data->soccer_team_visiting_id)->load();
+                $score_table_visiting = array_shift($score_table_visiting);
+                if(!$score_table_visiting)
+                    $score_table_visiting = new SoccerTable;
+                
+                $score_table_master->soccer_team_id = $data->soccer_team_master_id;
+                $score_table_master->soccer_match_id = $data->id;
+                $score_table_visiting->soccer_team_id = $data->soccer_team_visiting_id;
+                $score_table_visiting->soccer_match_id = $data->id;
+
+                if($data->score_master == $data->score_visiting){
+                    $score_table_master->win = 0;
+                    $score_table_master->draw = 1;
+                    $score_table_master->los = 0;
+                    $score_table_master->pro_goal = $data->score_master;
+                    $score_table_master->own_goal = $data->score_visiting;          
+    
+                    $score_table_visiting->win = 0;
+                    $score_table_visiting->draw = 1;
+                    $score_table_visiting->los = 0;
+                    $score_table_visiting->pro_goal = $data->score_visiting;
+                    $score_table_visiting->own_goal = $data->score_master;
+                }
+                if($data->score_master > $data->score_visiting){
+                    $score_table_master->win = 1;
+                    $score_table_master->draw = 0;
+                    $score_table_master->los = 0;
+                    $score_table_master->pro_goal = $data->score_master;
+                    $score_table_master->own_goal = $data->score_visiting;          
+    
+                    $score_table_visiting->win = 0;
+                    $score_table_visiting->draw = 0;
+                    $score_table_visiting->los = 1;
+                    $score_table_visiting->pro_goal = $data->score_visiting;
+                    $score_table_visiting->own_goal = $data->score_master;
+                }
+                if($data->score_master < $data->score_visiting){
+                    $score_table_master->win = 0;
+                    $score_table_master->draw = 0;
+                    $score_table_master->los = 1;
+                    $score_table_master->pro_goal = $data->score_master;
+                    $score_table_master->own_goal = $data->score_visiting;          
+    
+                    $score_table_visiting->win = 1;
+                    $score_table_visiting->draw = 0;
+                    $score_table_visiting->los = 0;
+                    $score_table_visiting->pro_goal = $data->score_visiting;
+                    $score_table_visiting->own_goal = $data->score_master;
+                }
+
+                $score_table_master->store();
+                $score_table_visiting->store();
+                
+            // }
+
             // get the generated id
             $data->id = $object->id;
             

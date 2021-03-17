@@ -56,7 +56,7 @@ class SoccerTableList extends TPage
 
         // creates the datagrid columns
         $column_id = new TDataGridColumn('id', 'Id', 'right');
-        $column_soccer_team_id = new TDataGridColumn('soccer_team->name', 'Time', 'left');
+        $column_soccer_team_id = new TDataGridColumn('soccer_team->slug', 'Time', 'left');
         $column_pts = new TDataGridColumn('pts', 'Pts', 'center');
         $column_game = new TDataGridColumn('game', 'J', 'center');
         $column_win = new TDataGridColumn('win', 'V', 'center');
@@ -254,12 +254,13 @@ class SoccerTableList extends TPage
                     $object->game = ($object->win+$object->draw+$object->los); // numero de jogos
                     $object->sg = ($object->pro_goal-$object->own_goal); // saldo de gols
                     
-                    $mod = ($object->pts/($object->game*3))*100; // calculando jance do time vencer
+                    $mod = ($object->pts/($object->game*3))*100; // calculando chance do time vencer
                     $object->mod = round($mod, 1); // arredondando
-                    
-                    $odd = (1/$object->mod)*100; // calculo valor da odd
-                    $object->odd = round($odd, 2); // arredondando 
-                    
+                   
+                    if($object->mod > 0){
+                        $odd = (1/$object->mod)*100; // calculo valor da odd
+                        $object->odd = round($odd, 2); // arredondando 
+                    }
                     $this->datagrid->addItem($object);
                 }
             }

@@ -72,6 +72,12 @@ class SoccerTeamList extends TPage
         $column_created_at = new TDataGridColumn('created_at', 'Criado em', 'right');
         $column_updated_at = new TDataGridColumn('updated_at', 'Ultima atualização', 'right');
 
+        $column_created_at->setTransformer(function($value){
+            return Convert::toDateBR($value);
+        });
+        $column_updated_at->setTransformer(function($value){
+            return Convert::toDateBR($value);
+        });
 
         // add the columns to the DataGrid
         // $this->datagrid->addColumn($column_id);

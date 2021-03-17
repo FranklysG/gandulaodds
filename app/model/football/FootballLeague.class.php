@@ -22,6 +22,7 @@ class FootballLeague extends TRecord
         parent::addAttribute('slug');
         parent::addAttribute('shield');
         parent::addAttribute('continent');
+        parent::addAttribute('status');
         parent::addAttribute('created_at');
         parent::addAttribute('updated_at');
     }
