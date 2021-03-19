@@ -22,7 +22,7 @@ class CountryList extends TPage
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_search_Country');
-        $this->form->setFormTitle('Country');
+        $this->form->setFormTitle('Listagem de Paises');
         $this->form->setFieldSizes('100%');
         
 

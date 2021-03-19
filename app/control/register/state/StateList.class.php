@@ -22,7 +22,7 @@ class StateList extends TPage
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_search_State');
-        $this->form->setFormTitle('State');
+        $this->form->setFormTitle('Listagem de estados / provincias');
         $this->form->setFieldSizes('100%');
         
 

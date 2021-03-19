@@ -22,12 +22,14 @@ class ViewTableOddList extends TPage
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_search_ViewTableOdd');
-        $this->form->setFormTitle('ViewTableOdd');
+        $this->form->setFormTitle('Cotação de cada time');
         
 
         // create the form fields
-        $slug = new TEntry('slug');
-        $acron = new TEntry('acron');
+        $slug = new TDBUniqueSearch('slug','app','SoccerTeam','id','slug');
+        $slug->setMinLength(1);
+        $acron = new TDBUniqueSearch('acron','app','SoccerTeam','id','acron');
+        $acron->setMinLength(1);
 
 
         // add the fields

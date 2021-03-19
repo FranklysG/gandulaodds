@@ -51,8 +51,9 @@ class SoccerMatchForm extends TPage
             '0' => 'Em espera',
             '1' => 'Iniciado',
             '2' => 'Suspenso',
-            '3' => 'Finalizado',
-            '4' => 'Cancelado'
+            '3' => 'Adiado',
+            '4' => 'Finalizado',
+            '5' => 'Cancelado'
         ]);
         $created_at = new TDate('created_at');
         $updated_at = new TEntry('updated_at');

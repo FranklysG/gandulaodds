@@ -42,8 +42,9 @@ class SoccerMatchList extends TPage
             '0' => 'Em espera',
             '1' => 'Iniciado',
             '2' => 'Suspenso',
-            '3' => 'Finalizado',
-            '4' => 'Cancelado'
+            '3' => 'Adiado',
+            '4' => 'Finalizado',
+            '5' => 'Cancelado'
         ]);
         $ini = new TDate('ini');
         $end = new TDate('end');
@@ -72,6 +73,7 @@ class SoccerMatchList extends TPage
         // creates a Datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width: 100%';
+        $this->datagrid->disableDefaultClick();
         $this->datagrid->datatable = 'true';
         // $this->datagrid->enablePopover('Popover', 'Hi <b> {name} </b>');
         
@@ -100,10 +102,14 @@ class SoccerMatchList extends TPage
                     $label = 'Suspenso';
                     break;
                 case 3:
+                    $class = 'primary';
+                    $label = 'Adiado';
+                    break;
+                case 4:
                     $class = 'danger';
                     $label = 'Finalizado';
                     break;
-                case 3:
+                case 5:
                     $class = 'danger';
                     $label = 'Cancelado';
                     break;
@@ -147,9 +153,9 @@ class SoccerMatchList extends TPage
 
 
         $action1 = new TDataGridAction(['SoccerMatchForm', 'onEdit'], ['id'=>'{id}']);
-        $action1->setDisplayCondition( array($this, 'displayColumn') );
+        $action1->setDisplayCondition( array($this, 'displayEditColumn') );
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id'=>'{id}']);
-        $action2->setDisplayCondition( array($this, 'displayColumn') );
+        $action2->setDisplayCondition( array($this, 'displayDelColumn') );
         
         $this->datagrid->addAction($action1, _t('Edit'),   'far:edit blue');
         $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
@@ -175,16 +181,41 @@ class SoccerMatchList extends TPage
     /**
      * Define when the action can be displayed
      */
-    public function displayColumn( $object )
+    public function displayEditColumn( $object )
     {
         $array = TSession::getValue('usergroupids');
-        if ($object->status <= 1)
-        {
-            if(in_array(2,$array)){
-                return true;
+        if(!in_array(1,$array)){
+            switch ($object->status) {
+                case 1:
+                    return true;
+                    break;
+                default:
+                    return false;
+                    break;
             }
+        }else{
+            return true;
         }
-        return false;
+    }
+
+    /**
+     * Define when the action can be displayed
+     */
+    public function displayDelColumn( $object )
+    {
+        $array = TSession::getValue('usergroupids');
+        if(!in_array(1,$array)){
+            switch ($object->status) {
+                case 0:
+                    return true;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
+        }else{
+            return true;
+        }
     }
 
     /**
@@ -231,13 +262,8 @@ class SoccerMatchList extends TPage
         TSession::setValue(__CLASS__.'_filter_football_league_id',   NULL);
         TSession::setValue(__CLASS__.'_filter_soccer_team_master_id',   NULL);
         TSession::setValue(__CLASS__.'_filter_soccer_team_visiting_id',   NULL);
-        TSession::setValue(__CLASS__.'_filter_hour',   NULL);
         TSession::setValue(__CLASS__.'_filter_date',   NULL);
-        TSession::setValue(__CLASS__.'_filter_score_master',   NULL);
-        TSession::setValue(__CLASS__.'_filter_score_visiting',   NULL);
         TSession::setValue(__CLASS__.'_filter_status',   NULL);
-        TSession::setValue(__CLASS__.'_filter_created_at',   NULL);
-        TSession::setValue(__CLASS__.'_filter_updated_at',   NULL);
 
         if (isset($data->football_league_id) AND ($data->football_league_id)) {
             $filter = new TFilter('football_league_id', 'like', "%{$data->football_league_id}%"); // create the filter

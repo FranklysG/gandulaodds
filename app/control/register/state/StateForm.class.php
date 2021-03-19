@@ -19,7 +19,7 @@ class StateForm extends TPage
 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_State');
-        $this->form->setFormTitle('State');
+        $this->form->setFormTitle('Estados / Provincias');
         $this->form->setFieldSizes('100%');
         
 

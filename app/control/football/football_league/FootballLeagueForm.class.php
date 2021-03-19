@@ -18,18 +18,20 @@ class FootballLeagueForm extends TPage
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_FootballLeague');
-        $this->form->setFormTitle('FootballLeague');
+        $this->form->setFormTitle('Campeonatos de Fotebol');
         $this->form->setFieldSizes('100%');
         
 
         // create the form fields
         $id = new THidden('id');
         $name = new TEntry('name');
+        $season = new TEntry('season');
         $slug = new TEntry('slug');
         $shield = new TFile('shield');
         $shield->setAllowedExtensions( ['png', 'jpg', 'jpeg'] );
         $continent = new TEntry('continent');
         $status = new TCombo('status');
+        $status->setDefaultOption(false);
         $status->addItems([
             '0' => 'Em espera',
             '1' => 'Iniciado',
@@ -48,7 +50,8 @@ class FootballLeagueForm extends TPage
 
         // add the fields
         $this->form->addFields( [ $id ] );
-        $this->form->addFields( [ new TLabel('Nome'), $name ] );
+        $row = $this->form->addFields( [ new TLabel('Nome'), $name ], [ new TLabel('Temporada'), $season ] );
+        $row->layout = ['col-sm-8','col-sm-4'];
         $this->form->addFields( [ new TLabel('Slug'), $slug ] );
         $this->form->addFields( [ new TLabel('Escudo'), $shield ] );
         $this->form->addFields( [ new TLabel(''), $this->frame ] );

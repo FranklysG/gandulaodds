@@ -22,7 +22,8 @@ class FootballLeagueList extends TPage
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_search_FootballLeague');
-        $this->form->setFormTitle('FootballLeague');
+        $this->form->setFormTitle('Listagem de Campeonatos '.date('Y'));
+        $this->form->setFieldSizes('100%');
         
 
         // create the form fields
@@ -31,6 +32,7 @@ class FootballLeagueList extends TPage
         $slug = new TEntry('slug');
         $continent = new TEntry('continent');
         $status = new TCombo('status');
+        $status->setDefaultOption(false);
         $status->addItems([
             '0' => 'Em espera',
             '1' => 'Iniciado',
@@ -38,8 +40,8 @@ class FootballLeagueList extends TPage
             '3' => 'Finalizado',
             '4' => 'Cancelado'
         ]);
-        $created_at = new TDate('created_at');
-        $updated_at = new TDate('updated_at');
+        $ini = new TDate('ini');
+        $end = new TDate('end');
 
 
         // add the fields
@@ -47,20 +49,11 @@ class FootballLeagueList extends TPage
         $row = $this->form->addFields( [ new TLabel('Nome'), $name ],
                                 [ new TLabel('Slug'), $slug ],
                                 [ new TLabel('Continente'), $continent ],
-                                [ new TLabel('Criado em'), $created_at ],
-                                [ new TLabel('Updated At'), $updated_at ] );
+                                [ new TLabel('de'), $ini ],
+                                [ new TLabel('até'), $end ] );
 
         $row->layout = ['col-sm-2','col-sm-2','col-sm-2','col-sm-2','col-sm-2'];
 
-        // set sizes
-        $id->setSize('100%');
-        $name->setSize('100%');
-        $slug->setSize('100%');
-        $continent->setSize('100%');
-        $created_at->setSize('100%');
-        $updated_at->setSize('100%');
-
-        
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue(__CLASS__ . '_filter_data') );
         
@@ -84,7 +77,7 @@ class FootballLeagueList extends TPage
         $column_shield = new TDataGridColumn('shield', 'Escudo', 'left');
         $column_status = new TDataGridColumn('status', 'Status', 'left');
         $column_created_at = new TDataGridColumn('created_at', 'Criado em', 'left');
-        $column_updated_at = new TDataGridColumn('updated_at', 'Updated At', 'left');
+        $column_updated_at = new TDataGridColumn('updated_at', 'Atualização', 'left');
 
         $column_status->setTransformer(function($value){
             switch ($value) {
@@ -134,7 +127,7 @@ class FootballLeagueList extends TPage
         $this->datagrid->addColumn($column_shield);
         $this->datagrid->addColumn($column_status);
         $this->datagrid->addColumn($column_created_at);
-        $this->datagrid->addColumn($column_updated_at);
+        // $this->datagrid->addColumn($column_updated_at);
 
 
         $action1 = new TDataGridAction(['FootballLeagueForm', 'onEdit'], ['id'=>'{id}']);
@@ -207,8 +200,7 @@ class FootballLeagueList extends TPage
         TSession::setValue(__CLASS__.'_filter_name',   NULL);
         TSession::setValue(__CLASS__.'_filter_slug',   NULL);
         TSession::setValue(__CLASS__.'_filter_continent',   NULL);
-        TSession::setValue(__CLASS__.'_filter_created_at',   NULL);
-        TSession::setValue(__CLASS__.'_filter_updated_at',   NULL);
+        TSession::setValue(__CLASS__.'_filter_date',   NULL);
 
         if (isset($data->id) AND ($data->id)) {
             $filter = new TFilter('id', '=', $data->id); // create the filter
@@ -233,16 +225,9 @@ class FootballLeagueList extends TPage
             TSession::setValue(__CLASS__.'_filter_continent',   $filter); // stores the filter in the session
         }
 
-
-        if (isset($data->created_at) AND ($data->created_at)) {
-            $filter = new TFilter('created_at', 'like', "%{$data->created_at}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_created_at',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->updated_at) AND ($data->updated_at)) {
-            $filter = new TFilter('updated_at', 'like', "%{$data->updated_at}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_updated_at',   $filter); // stores the filter in the session
+        if ((isset($data->ini) AND ($data->ini)) AND (isset($data->end) AND ($data->end))) {
+            $filter = new TFilter('date', 'between', "{$data->ini}", "{$data->end}"); // create the filter
+            TSession::setValue(__CLASS__.'_filter_date',   $filter); // stores the filter in the session
         }
 
         
@@ -303,17 +288,11 @@ class FootballLeagueList extends TPage
                 $criteria->add(TSession::getValue(__CLASS__.'_filter_continent')); // add the session filter
             }
 
-
-            if (TSession::getValue(__CLASS__.'_filter_created_at')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_created_at')); // add the session filter
+            if (TSession::getValue(__CLASS__.'_filter_date')) {
+                $criteria->add(TSession::getValue(__CLASS__.'_filter_date')); // add the session filter
             }
 
-
-            if (TSession::getValue(__CLASS__.'_filter_updated_at')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_updated_at')); // add the session filter
-            }
-
-            
+            $criteria->add(new TFilter('status','<=',2));
             // load the objects according to criteria
             $objects = $repository->load($criteria, FALSE);
             

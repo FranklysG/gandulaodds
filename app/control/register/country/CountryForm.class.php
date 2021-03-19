@@ -19,7 +19,7 @@ class CountryForm extends TPage
 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Country');
-        $this->form->setFormTitle('Adicionar Paises');
+        $this->form->setFormTitle('Adicionar Pais');
         $this->form->setFieldSizes('100%');
         
 

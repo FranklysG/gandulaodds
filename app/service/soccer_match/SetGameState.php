@@ -35,8 +35,6 @@ class SetGameState extends TPage
                     $object->store();
                 }
             }
-            
-
             TTransaction::close();
         } catch (Exeption $e) {
             new TMessage('error', $e->getMessage());
