@@ -69,8 +69,8 @@ class SoccerTeamList extends TPage
         $column_shield = new TDataGridColumn('shield', 'Escudo', 'left');
         $column_stadium = new TDataGridColumn('stadium', 'Estadio', 'left');
         $column_state_id = new TDataGridColumn('state->slug', 'Estado', 'left');
-        $column_created_at = new TDataGridColumn('created_at', 'Criado em', 'right');
-        $column_updated_at = new TDataGridColumn('updated_at', 'Ultima atualização', 'right');
+        $column_created_at = new TDataGridColumn('created_at', 'Criado', 'right');
+        $column_updated_at = new TDataGridColumn('updated_at', 'Atualização', 'right');
 
         $column_created_at->setTransformer(function($value){
             return Convert::toDateBR($value);
@@ -88,7 +88,7 @@ class SoccerTeamList extends TPage
         $this->datagrid->addColumn($column_stadium);
         $this->datagrid->addColumn($column_state_id);
         $this->datagrid->addColumn($column_created_at);
-        $this->datagrid->addColumn($column_updated_at);
+        // $this->datagrid->addColumn($column_updated_at);
 
 
         $action1 = new TDataGridAction(['SoccerTeamForm', 'onEdit'], ['id'=>'{id}']);
@@ -321,7 +321,7 @@ class SoccerTeamList extends TPage
         $action->setParameters($param); // pass the key parameter ahead
         
         // shows a dialog to the user
-        new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        new TQuestion('Verifique se o time não jogou com outro time antes de deleta-lo', $action);
     }
     
     /**
@@ -342,7 +342,8 @@ class SoccerTeamList extends TPage
         }
         catch (Exception $e) // in case of exception
         {
-            new TMessage('error', $e->getMessage()); // shows the exception error message
+            new TMessage('warning', 'Time tem um ou mais jogos registrados'); // shows the exception error message
+            // new TMessage('error', $e->getMessage()); // shows the exception error message
             TTransaction::rollback(); // undo all pending operations
         }
     }

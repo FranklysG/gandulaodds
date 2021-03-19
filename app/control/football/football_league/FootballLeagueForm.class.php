@@ -53,6 +53,7 @@ class FootballLeagueForm extends TPage
         $this->form->addFields( [ new TLabel('Escudo'), $shield ] );
         $this->form->addFields( [ new TLabel(''), $this->frame ] );
         $this->form->addFields( [ new TLabel('Continente'), $continent ] );
+        $this->form->addFields( [ new TLabel('status'), $status ] );
 
 
         if (!empty($id))

@@ -28,11 +28,15 @@ class SystemAdministrationDashboard extends TPage
             $indicator2 = new THtmlRenderer('app/resources/adianti/info-box.html');
             $indicator3 = new THtmlRenderer('app/resources/adianti/info-box.html');
             $indicator4 = new THtmlRenderer('app/resources/adianti/info-box.html');
+            $indicator5 = new THtmlRenderer('app/resources/adianti/info-box.html');
+            $indicator6 = new THtmlRenderer('app/resources/adianti/info-box.html');
             
             $indicator1->enableSection('main', ['title' => 'Times',    'icon' => 'tshirt',       'background' => 'orange', 'value' => SoccerTeam::count()]);
             $indicator2->enableSection('main', ['title' => 'Jogos',   'icon' => 'trophy',      'background' => 'blue',   'value' => SoccerMatch::count()]);
             $indicator3->enableSection('main', ['title' => 'Campeonatos',    'icon' => 'award', 'background' => 'purple', 'value' => FootballLeague::count()]);
             $indicator4->enableSection('main', ['title' => 'Moedas', 'icon' => 'money-bill-wave',       'background' => 'green',  'value' => Convert::toMonetario(SystemProgram::count())]);
+            $indicator5->enableSection('main', ['title' => 'Estados', 'icon' => 'map',       'background' => 'red',  'value' => State::count()]);
+            $indicator6->enableSection('main', ['title' => 'Paises', 'icon' => 'globe-americas',       'background' => 'orange',  'value' => Country::count()]);
             
             $chart1 = new THtmlRenderer('app/resources/adianti/google_bar_chart.html');
             $data1 = [];
@@ -82,6 +86,8 @@ class SystemAdministrationDashboard extends TPage
                                           'indicator2' => $indicator2,
                                           'indicator3' => $indicator3,
                                           'indicator4' => $indicator4,
+                                          'indicator5' => $indicator5,
+                                          'indicator6' => $indicator6,
                                           'chart1'     => $chart1,
                                           'chart2'     => $chart2] );
             

@@ -85,7 +85,7 @@ class FootballLeague extends TRecord
         $criteria = new TCriteria;
         $criteria->add(new TFilter('football_league_id', '=', $this->id));
         $repository = new TRepository('SoccerMatch');
-        $repository->delete($criteria);
+        $repository->load($criteria);
         // store the related SoccerMatch objects
         if ($this->soccer_matchs)
         {

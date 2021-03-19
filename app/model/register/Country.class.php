@@ -82,7 +82,8 @@ class Country extends TRecord
         $criteria = new TCriteria;
         $criteria->add(new TFilter('country_id', '=', $this->id));
         $repository = new TRepository('State');
-        $repository->delete($criteria);
+        $repository->load($criteria);
+        
         // store the related State objects
         if ($this->states)
         {

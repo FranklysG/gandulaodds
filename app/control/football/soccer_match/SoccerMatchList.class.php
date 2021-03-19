@@ -25,9 +25,10 @@ class SoccerMatchList extends TPage
         $this->form->setFormTitle('Todos os jogos');
         $this->form->setFieldSizes('100%');
         
-
         // create the form fields
-        $football_league_id = new TDBUniqueSearch('football_league_id','app','FootballLeague','id','name');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('status','=',1));
+        $football_league_id = new TDBUniqueSearch('football_league_id','app','FootballLeague','id','slug',null,$criteria);
         $football_league_id->setMinLength(1);
         $soccer_team_master_id = new TDBUniqueSearch('soccer_team_master_id','app','SoccerTeam','id','slug');
         $soccer_team_master_id->setMinLength(1);
@@ -36,6 +37,7 @@ class SoccerMatchList extends TPage
         $hour = new TTime('hour');
         $date = new TDate('date');
         $status = new TCombo('status');
+        $status->setDefaultOption(false);
         $status->addItems([
             '0' => 'Em espera',
             '1' => 'Iniciado',
@@ -43,8 +45,8 @@ class SoccerMatchList extends TPage
             '3' => 'Finalizado',
             '4' => 'Cancelado'
         ]);
-        $created_at = new TDate('created_at');
-        $updated_at = new TDate('updated_at');
+        $ini = new TDate('ini');
+        $end = new TDate('end');
 
 
         // add the fields
@@ -52,13 +54,12 @@ class SoccerMatchList extends TPage
                                 [ new TLabel('Time Mandante'), $soccer_team_master_id ],
                                 [ new TLabel('Time Visitante'), $soccer_team_visiting_id ],
                                 [ new TLabel('Horario '), $hour ],
-                                [ new TLabel('Data'), $date ],
                                 [ new TLabel('Status'), $status ],
                                 [],
-                                [ new TLabel('Criado em'), $created_at ],
-                                [ new TLabel('Ultima atualização'), $updated_at ] );
+                                [ new TLabel('Jogos de'), $ini ],
+                                [ new TLabel('até'), $end ] );
 
-        $row->layout = ['col-sm-2','col-sm-2','col-sm-2','col-sm-2','col-sm-2','col-sm-2','col-sm-12','col-sm-2','col-sm-2'];
+        $row->layout = ['col-sm-2','col-sm-2','col-sm-2','col-sm-2','col-sm-2','col-sm-12','col-sm-2','col-sm-2'];
         
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue(__CLASS__ . '_filter_data') );
@@ -146,7 +147,9 @@ class SoccerMatchList extends TPage
 
 
         $action1 = new TDataGridAction(['SoccerMatchForm', 'onEdit'], ['id'=>'{id}']);
+        $action1->setDisplayCondition( array($this, 'displayColumn') );
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id'=>'{id}']);
+        $action2->setDisplayCondition( array($this, 'displayColumn') );
         
         $this->datagrid->addAction($action1, _t('Edit'),   'far:edit blue');
         $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
@@ -169,6 +172,21 @@ class SoccerMatchList extends TPage
         parent::add($container);
     }
     
+    /**
+     * Define when the action can be displayed
+     */
+    public function displayColumn( $object )
+    {
+        $array = TSession::getValue('usergroupids');
+        if ($object->status <= 1)
+        {
+            if(in_array(2,$array)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Inline record editing
      * @param $param Array containing:
@@ -244,43 +262,16 @@ class SoccerMatchList extends TPage
             TSession::setValue(__CLASS__.'_filter_hour',   $filter); // stores the filter in the session
         }
 
-
-        if (isset($data->date) AND ($data->date)) {
-            $filter = new TFilter('date', 'like', "%{$data->date}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_date',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->score_master) AND ($data->score_master)) {
-            $filter = new TFilter('score_master', 'like', "%{$data->score_master}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_score_master',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->score_visiting) AND ($data->score_visiting)) {
-            $filter = new TFilter('score_visiting', 'like', "%{$data->score_visiting}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_score_visiting',   $filter); // stores the filter in the session
-        }
-
-
         if (isset($data->status) AND ($data->status)) {
             $filter = new TFilter('status', 'like', "%{$data->status}%"); // create the filter
             TSession::setValue(__CLASS__.'_filter_status',   $filter); // stores the filter in the session
         }
 
-
-        if (isset($data->created_at) AND ($data->created_at)) {
-            $filter = new TFilter('created_at', 'like', "%{$data->created_at}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_created_at',   $filter); // stores the filter in the session
+        if ((isset($data->ini) AND ($data->ini)) AND (isset($data->end) AND ($data->end))) {
+            $filter = new TFilter('date', 'between', "{$data->ini}", "{$data->end}"); // create the filter
+            TSession::setValue(__CLASS__.'_filter_date',   $filter); // stores the filter in the session
         }
 
-
-        if (isset($data->updated_at) AND ($data->updated_at)) {
-            $filter = new TFilter('updated_at', 'like', "%{$data->updated_at}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_updated_at',   $filter); // stores the filter in the session
-        }
-
-        
         // fill the form with data again
         $this->form->setData($data);
         
@@ -343,32 +334,6 @@ class SoccerMatchList extends TPage
                 $criteria->add(TSession::getValue(__CLASS__.'_filter_date')); // add the session filter
             }
 
-
-            if (TSession::getValue(__CLASS__.'_filter_score_master')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_score_master')); // add the session filter
-            }
-
-
-            if (TSession::getValue(__CLASS__.'_filter_score_visiting')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_score_visiting')); // add the session filter
-            }
-
-
-            if (TSession::getValue(__CLASS__.'_filter_status')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_status')); // add the session filter
-            }
-
-
-            if (TSession::getValue(__CLASS__.'_filter_created_at')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_created_at')); // add the session filter
-            }
-
-
-            if (TSession::getValue(__CLASS__.'_filter_updated_at')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_updated_at')); // add the session filter
-            }
-
-            
             // load the objects according to criteria
             $objects = $repository->load($criteria, FALSE);
             
@@ -384,7 +349,8 @@ class SoccerMatchList extends TPage
                 foreach ($objects as $object)
                 {
                     // add the object inside the datagrid
-                    $this->datagrid->addItem($object);
+                    if($object->football_league->status == 1)
+                        $this->datagrid->addItem($object);
                 }
             }
             

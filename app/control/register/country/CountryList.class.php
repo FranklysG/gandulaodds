@@ -83,7 +83,8 @@ class CountryList extends TPage
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id'=>'{id}']);
         
         $this->datagrid->addAction($action1, _t('Edit'),   'far:edit blue');
-        $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
+        if(TSession::getValue('userid') == 1)
+            $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
         
         // create the datagrid model
         $this->datagrid->createModel();
@@ -291,7 +292,7 @@ class CountryList extends TPage
         $action->setParameters($param); // pass the key parameter ahead
         
         // shows a dialog to the user
-        new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        new TQuestion('Caso existam estados cadastrados, os mesmos iram ser deletados, se não ouver times no estado', $action);
     }
     
     /**
@@ -308,11 +309,12 @@ class CountryList extends TPage
             TTransaction::close(); // close the transaction
             
             $pos_action = new TAction([__CLASS__, 'onReload']);
-            new TMessage('info', AdiantiCoreTranslator::translate('Record deleted'), $pos_action); // success message
+            new TMessage('info', 'Pais e seus estados foram deletados', $pos_action); // success message
         }
         catch (Exception $e) // in case of exception
         {
-            new TMessage('error', $e->getMessage()); // shows the exception error message
+            new TMessage('warning','Existem times com estado cadastrado nesse pais');
+            // new TMessage('error', $e->getMessage()); // shows the exception error message
             TTransaction::rollback(); // undo all pending operations
         }
     }

@@ -26,9 +26,11 @@ class StateForm extends TPage
         // create the form fields
         $id = new THidden('id');
         $country_id = new TDBUniqueSearch('country_id','app','Country','id','name');
+        $country_id->addValidation('Pais', new TRequiredValidator);
         $country_id->setMinLength(1);
         $country_id->setMask('{name} ({slug})');
         $name = new TEntry('name');
+        $name->addValidation('Nome', new TRequiredValidator);
         $slug = new TEntry('slug');
         $created_at = new TDate('created_at');
         $updated_at = new TDate('updated_at');

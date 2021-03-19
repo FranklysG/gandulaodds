@@ -23,7 +23,9 @@ class SoccerMatchForm extends TPage
 
         // create the form fields
         $id = new THidden('id');
-        $football_league_id = new TDBUniqueSearch('football_league_id','app','FootballLeague','id','slug');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('status','=',1));
+        $football_league_id = new TDBUniqueSearch('football_league_id','app','FootballLeague','id','slug',null,$criteria);
         $football_league_id->addValidation('Campeonato', new TRequiredValidator);
         $football_league_id->setMinLength(1);
         $soccer_team_master_id = new TDBUniqueSearch('soccer_team_master_id','app','SoccerTeam','id','slug');
@@ -37,11 +39,14 @@ class SoccerMatchForm extends TPage
         $date = new TDate('date');
         $date->addValidation('Data Jogo', new TRequiredValidator);
         $score_master = new TEntry('score_master');
+        $score_master->setMask('9');
         $score_master->addValidation('Placar Mandante', new TRequiredValidator);
         $score_visiting = new TEntry('score_visiting');
+        $score_visiting->setMask('9');
         $score_visiting->addValidation('Placar Visitante', new TRequiredValidator);
         $status = new TCombo('status');
         $status->addValidation('Status', new TRequiredValidator);
+        $status->setDefaultOption(false);
         $status->addItems([
             '0' => 'Em espera',
             '1' => 'Iniciado',
@@ -106,9 +111,8 @@ class SoccerMatchForm extends TPage
             $data = $this->form->getData(); // get form data as array
             $object = new SoccerMatch;  // create an empty object
             $object->fromArray( (array) $data); // load the object with data
-            $object->store(); // save the object
-
-            // if($data->status == '3'){
+            if($data->soccer_team_master_id != $data->soccer_team_visiting_id){
+                $object->store();
 
                 $score_table_master = SoccerTable::where('soccer_match_id','=',$data->id)->where('soccer_team_id','=',$data->soccer_team_master_id)->load();
                 $score_table_master = array_shift($score_table_master);
@@ -121,9 +125,9 @@ class SoccerMatchForm extends TPage
                     $score_table_visiting = new SoccerTable;
                 
                 $score_table_master->soccer_team_id = $data->soccer_team_master_id;
-                $score_table_master->soccer_match_id = $data->id;
+                $score_table_master->soccer_match_id = $object->id;
                 $score_table_visiting->soccer_team_id = $data->soccer_team_visiting_id;
-                $score_table_visiting->soccer_match_id = $data->id;
+                $score_table_visiting->soccer_match_id = $object->id;
 
                 if($data->score_master == $data->score_visiting){
                     $score_table_master->win = 0;
@@ -167,21 +171,25 @@ class SoccerMatchForm extends TPage
 
                 $score_table_master->store();
                 $score_table_visiting->store();
-                
-            // }
 
-            // get the generated id
-            $data->id = $object->id;
-            
-            $this->form->setData($data); // fill form data
-            TTransaction::close(); // close the transaction
-            
-            
-            new TMessage('info', AdiantiCoreTranslator::translate('Record saved'),new TAction(['SoccerMatchList','onReload']));
+                // get the generated id
+                $data->id = $object->id;
+                
+                $this->form->setData($data); // fill form data
+                TTransaction::close(); // close the transaction
+                
+                
+                new TMessage('info', AdiantiCoreTranslator::translate('Record saved'),new TAction(['SoccerMatchList','onReload']));
+       
+            }else{
+                new TMessage('warning','Times Iguais não competem'); // shows the exception error message
+            }
+           
         }
         catch (Exception $e) // in case of exception
         {
             new TMessage('error', $e->getMessage()); // shows the exception error message
+           
             $this->form->setData( $this->form->getData() ); // keep form data
             TTransaction::rollback(); // undo all pending operations
         }

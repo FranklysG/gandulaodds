@@ -88,7 +88,8 @@ class StateList extends TPage
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id'=>'{id}']);
         
         $this->datagrid->addAction($action1, _t('Edit'),   'far:edit blue');
-        $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
+        if(TSession::getValue('userid') == 1)
+            $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
         
         // create the datagrid model
         $this->datagrid->createModel();
@@ -317,7 +318,7 @@ class StateList extends TPage
         }
         catch (Exception $e) // in case of exception
         {
-            new TMessage('error', $e->getMessage()); // shows the exception error message
+            new TMessage('warning','Existem times com casa nesse estado');
             TTransaction::rollback(); // undo all pending operations
         }
     }
