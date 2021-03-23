@@ -138,6 +138,12 @@ class Convert
         return $date->format('d/m/Y H:i:s');
     }
     
+    public static function toHourBR($value)
+    {
+        $date = new DateTime($value);
+        return $date->format('H:i');
+    }
+    
     public static function toDayMonthString($value)
     {
         $date = new DateTime($value);

@@ -1,0 +1,130 @@
+<!--[main]-->
+<style type="text/css">
+    .container {
+        width: 290px;
+        background-color: rgb(255, 255, 255);
+        border: 1px solid rgb(238, 238, 238);
+        color: rgb(51, 51, 51);
+        padding: 16px 24px;
+        margin-left: -1px;
+        margin-top: -1px;
+        margin-bottom: 0px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .container_team {
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        line-height: 1.71;
+        letter-spacing: -0.3px;
+        font-weight: 600;
+    }
+
+    .detail_team {
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+
+    .shield_team {
+        width: 24px;
+        height: 24px;
+    }
+
+    .team_name {
+        text-overflow: none;
+        margin-right: 16px;
+        margin-left: 12px;
+    }
+
+    .team_goals {
+        text-align: right;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+
+    .match_status {
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.33;
+        letter-spacing: normal;
+        color: rgb(85, 85, 85);
+        display: block;
+        margin-top: 15px;
+    }
+
+    .detail_team {
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+
+    .football_league_title {
+        background-color: rgb(255, 255, 255);
+        padding-bottom: 16px;
+        color: rgb(51, 51, 51);
+        font-size: 16px;
+        font-weight: 600;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.5;
+        letter-spacing: -0.3px;
+    }
+
+    .type_game {
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: rgb(85, 85, 85);
+        font-size: 12px;
+        line-height: 1.33;
+    }
+
+    .hr_game {
+        -webkit-box-align: center;
+        align-items: center;
+        display: inline-block;
+    }
+</style>
+<!--[football_league]-->
+<div class="mb-4">
+    <div class="football_league_title">{$football_league_slug}</div>
+    <!--[match]-->
+    <div class="container">
+        <div class="type_game"><span>Futebol</span>
+            <div><span class="hr_game">{$soccer_match_hour}</span></div>
+        </div>
+        <div class="container_team">
+            <div class="detail_team">
+                <img src="tmp/shield_soocer_team/{$soccer_team_master_shield}" class="d-inline-block shield_team">
+                <span class="team_name">{$soccer_team_master}</span>
+            </div>
+            <div class="team_goals"><span class="gols">{$soccer_team_master_score}</span></div>
+        </div>
+        <div class="container_team">
+            <div class="detail_team">
+                <img src="tmp/shield_soocer_team/{$soccer_team_visiting_shield}" class="d-inline-block shield_team">
+                <span class="team_name">{$soccer_team_visiting}</span>
+            </div>
+            <div class="team_goals"><span class="gols">{$soccer_team_visiting_score}</span></div>
+        </div>
+        <!--[soccer_match_status]-->
+        <span class="btn btn-{$class}" style="padding: 0px 10px;">{$label}</span>
+        <!--[/soccer_match_status]-->
+    </div>
+    <!--[/match]-->
+</div>
+<!--[/football_league]-->
+<!--[/main]-->
