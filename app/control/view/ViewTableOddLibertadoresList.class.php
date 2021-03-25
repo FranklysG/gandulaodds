@@ -1,9 +1,9 @@
 <?php
 /**
- * ViewTableOddList Listing
+ * ViewTableOddLibertadoresList Listing
  * @author  <your name here>
  */
-class ViewTableOddList extends TPage
+class ViewTableOddLibertadoresList extends TPage
 {
     private $form; // form
     private $datagrid; // listing
@@ -22,7 +22,7 @@ class ViewTableOddList extends TPage
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_search_ViewTableOdd');
-        $this->form->setFormTitle('Cotação de cada time');
+        $this->form->setFormTitle('Cotação de cada time Libertadores');
         
 
         // create the form fields
@@ -191,17 +191,11 @@ class ViewTableOddList extends TPage
             TTransaction::open('app');
             
             // creates a repository for ViewTableOdd
-            $repository = new TRepository('ViewTableOdd');
+            $repository = new TRepository('ViewTableOddLibertadores');
             $limit = 10;
             // creates a criteria
             $criteria = new TCriteria;
             
-            // default order
-            if (empty($param['order']))
-            {
-                $param['order'] = 'soccer_team_id';
-                $param['direction'] = 'asc';
-            }
             $criteria->setProperties($param); // order, offset
             $criteria->setProperty('limit', $limit);
             

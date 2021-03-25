@@ -18,15 +18,44 @@ class FootballLeague extends TRecord
     public function __construct($id = NULL, $callObjectLoad = TRUE)
     {
         parent::__construct($id, $callObjectLoad);
-        parent::addAttribute('name');
-        parent::addAttribute('slug');
+        parent::addAttribute('league_id');
         parent::addAttribute('shield');
         parent::addAttribute('season');
+        parent::addAttribute('date_ini');
+        parent::addAttribute('date_end');
         parent::addAttribute('continent');
         parent::addAttribute('status');
         parent::addAttribute('created_at');
         parent::addAttribute('updated_at');
     }
+
+      
+   /**
+     * Method set_league
+     * Sample of usage: $soccer_match->league = $object;
+     * @param $object Instance of League
+     */
+    public function set_league(League $object)
+    {
+        $this->league = $object;
+        $this->league_id = $object->id;
+    }
+    
+    /**
+     * Method get_league
+     * Sample of usage: $soccer_match->league->attribute;
+     * @returns League instance
+     */
+    public function get_league()
+    {
+        // loads the associated object
+        if (empty($this->league))
+            $this->league = new League($this->league_id);
+    
+        // returns the associated object
+        return $this->league;
+    }
+    
 
     
     /**

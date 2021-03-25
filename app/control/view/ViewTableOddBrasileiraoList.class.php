@@ -1,9 +1,9 @@
 <?php
 /**
- * FootballLeagueList Listing
+ * ViewTableOddBrasileiraoList Listing
  * @author  <your name here>
  */
-class FootballLeagueList extends TPage
+class ViewTableOddBrasileiraoList extends TPage
 {
     private $form; // form
     private $datagrid; // listing
@@ -21,46 +21,33 @@ class FootballLeagueList extends TPage
         parent::__construct();
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_search_FootballLeague');
-        $this->form->setFormTitle('Listagem de Campeonatos '.date('Y'));
-        $this->form->setFieldSizes('100%');
+        $this->form = new BootstrapFormBuilder('form_search_ViewTableOdd');
+        $this->form->setFormTitle('Cotação de cada time Brasileirão');
         
 
         // create the form fields
-        $id = new THidden('id');
-        $name = new TEntry('name');
-        $slug = new TEntry('slug');
-        $continent = new TEntry('continent');
-        $status = new TCombo('status');
-        $status->setDefaultOption(false);
-        $status->addItems([
-            '0' => 'Em espera',
-            '1' => 'Iniciado',
-            '2' => 'Suspenso',
-            '3' => 'Finalizado',
-            '4' => 'Cancelado'
-        ]);
-        $ini = new TDate('ini');
-        $end = new TDate('end');
+        $slug = new TDBUniqueSearch('slug','app','SoccerTeam','id','slug');
+        $slug->setMinLength(1);
+        $acron = new TDBUniqueSearch('acron','app','SoccerTeam','id','acron');
+        $acron->setMinLength(1);
 
 
         // add the fields
-        $this->form->addFields( [ $id ] );
-        $row = $this->form->addFields( [ new TLabel('Nome'), $name ],
-                                [ new TLabel('Slug'), $slug ],
-                                [ new TLabel('Continente'), $continent ],
-                                [ new TLabel('de'), $ini ],
-                                [ new TLabel('até'), $end ] );
+        $this->form->addFields( [ new TLabel('TIME'), $slug ], [ new TLabel('SIGLA'), $acron ] );
 
-        $row->layout = ['col-sm-2','col-sm-2','col-sm-2','col-sm-2','col-sm-2'];
 
+        // set sizes
+        $slug->setSize('100%');
+        $acron->setSize('100%');
+
+        
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue(__CLASS__ . '_filter_data') );
         
         // add the search form actions
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['FootballLeagueForm', 'onEdit']), 'fa:plus green');
+        // $this->form->addActionLink(_t('New'), new TAction(['', 'onEdit']), 'fa:plus green');
         
         // creates a Datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
@@ -70,72 +57,42 @@ class FootballLeagueList extends TPage
         
 
         // creates the datagrid columns
-        $column_id = new TDataGridColumn('id', 'Id', 'right');
-        $column_name = new TDataGridColumn('league->name', 'Nome', 'left');
-        $column_slug = new TDataGridColumn('league->slug', 'Slug', 'left');
-        $column_continent = new TDataGridColumn('continent', 'Continente', 'left');
-        $column_shield = new TDataGridColumn('shield', 'Escudo', 'left');
-        $column_status = new TDataGridColumn('status', 'Status', 'left');
-        $column_created_at = new TDataGridColumn('created_at', 'Criado em', 'left');
-        $column_updated_at = new TDataGridColumn('updated_at', 'Atualização', 'left');
+        $column_soccer_team_id = new TDataGridColumn('soccer_team_id', 'ID', 'right');
+        $column_slug = new TDataGridColumn('slug', 'TIME', 'left');
+        $column_acron = new TDataGridColumn('acron', 'SIGLA', 'left');
+        $column_pts = new TDataGridColumn('pts', 'PTS', 'center');
+        $column_j = new TDataGridColumn('j', 'J', 'center');
+        $column_v = new TDataGridColumn('v', 'V', 'center');
+        $column_e = new TDataGridColumn('e', 'E', 'center');
+        $column_d = new TDataGridColumn('d', 'D', 'center');
+        $column_gp = new TDataGridColumn('gp', 'GP', 'center');
+        $column_gc = new TDataGridColumn('gc', 'GC', 'center');
+        $column_sg = new TDataGridColumn('sg', 'SG', 'center');
+        $column_ap = new TDataGridColumn('ap', 'AP', 'center');
+        $column_odds = new TDataGridColumn('odds', 'Odds', 'center');
 
-        $column_status->setTransformer(function($value){
-            switch ($value) {
-                case 1:
-                    $class = 'success';
-                    $label = 'Iniciado';
-                    break;
-                case 2:
-                    $class = 'warning';
-                    $label = 'Suspenso';
-                    break;
-                case 3:
-                    $class = 'danger';
-                    $label = 'Finalizado';
-                    break;
-                case 3:
-                    $class = 'danger';
-                    $label = 'Cancelado';
-                    break;
-                
-                default:
-                    $class = 'secondary';
-                    $label = 'Em espera';
-                    break;
-            }
-
-            $div = new TElement('span');
-            $div->class = "btn btn-{$class}";
-            $div->style = "text-shadow:none; font-size:12px; font-weight:bold;width:80px;";
-            $div->add($label);
-            return $div;
-        });
-        
-        $column_created_at->setTransformer(function($value){
-            return Convert::toDateBR($value);
-        });
-
-        $column_updated_at->setTransformer(function($value){
-            return Convert::toDateBR($value);
-        });
 
         // add the columns to the DataGrid
-        // $this->datagrid->addColumn($column_id);
-        $this->datagrid->addColumn($column_name);
+        // $this->datagrid->addColumn($column_soccer_team_id);
         $this->datagrid->addColumn($column_slug);
-        $this->datagrid->addColumn($column_continent);
-        $this->datagrid->addColumn($column_shield);
-        $this->datagrid->addColumn($column_status);
-        $this->datagrid->addColumn($column_created_at);
-        // $this->datagrid->addColumn($column_updated_at);
+        $this->datagrid->addColumn($column_acron);
+        $this->datagrid->addColumn($column_pts);
+        $this->datagrid->addColumn($column_j);
+        $this->datagrid->addColumn($column_v);
+        $this->datagrid->addColumn($column_e);
+        $this->datagrid->addColumn($column_d);
+        $this->datagrid->addColumn($column_gp);
+        $this->datagrid->addColumn($column_gc);
+        $this->datagrid->addColumn($column_sg);
+        $this->datagrid->addColumn($column_ap);
+        $this->datagrid->addColumn($column_odds);
 
 
-        $action1 = new TDataGridAction(['FootballLeagueForm', 'onEdit'], ['id'=>'{id}']);
-        $action2 = new TDataGridAction([$this, 'onDelete'], ['id'=>'{id}']);
+        // $action1 = new TDataGridAction(['', 'onEdit'], ['soccer_team_id'=>'{soccer_team_id}']);
+        // $action2 = new TDataGridAction([$this, 'onDelete'], ['soccer_team_id'=>'{soccer_team_id}']);
         
-        $this->datagrid->addAction($action1, _t('Edit'),   'far:edit blue');
-        if(TSession::getValue('userid') == 1)
-            $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
+        // $this->datagrid->addAction($action1, _t('Edit'),   'far:edit blue');
+        // $this->datagrid->addAction($action2 ,_t('Delete'), 'far:trash-alt red');
         
         // create the datagrid model
         $this->datagrid->createModel();
@@ -172,7 +129,7 @@ class FootballLeagueList extends TPage
             $value = $param['value'];
             
             TTransaction::open('app'); // open a transaction with database
-            $object = new FootballLeague($key); // instantiates the Active Record
+            $object = new ViewTableOdd($key); // instantiates the Active Record
             $object->{$field} = $value;
             $object->store(); // update the object in the database
             TTransaction::close(); // close the transaction
@@ -196,23 +153,8 @@ class FootballLeagueList extends TPage
         $data = $this->form->getData();
         
         // clear session filters
-        TSession::setValue(__CLASS__.'_filter_id',   NULL);
-        TSession::setValue(__CLASS__.'_filter_name',   NULL);
         TSession::setValue(__CLASS__.'_filter_slug',   NULL);
-        TSession::setValue(__CLASS__.'_filter_continent',   NULL);
-        TSession::setValue(__CLASS__.'_filter_date',   NULL);
-
-        if (isset($data->id) AND ($data->id)) {
-            $filter = new TFilter('id', '=', $data->id); // create the filter
-            TSession::setValue(__CLASS__.'_filter_id',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->name) AND ($data->name)) {
-            $filter = new TFilter('name', 'like', "%{$data->name}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_name',   $filter); // stores the filter in the session
-        }
-
+        TSession::setValue(__CLASS__.'_filter_acron',   NULL);
 
         if (isset($data->slug) AND ($data->slug)) {
             $filter = new TFilter('slug', 'like', "%{$data->slug}%"); // create the filter
@@ -220,14 +162,9 @@ class FootballLeagueList extends TPage
         }
 
 
-        if (isset($data->continent) AND ($data->continent)) {
-            $filter = new TFilter('continent', 'like', "%{$data->continent}%"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_continent',   $filter); // stores the filter in the session
-        }
-
-        if ((isset($data->ini) AND ($data->ini)) AND (isset($data->end) AND ($data->end))) {
-            $filter = new TFilter('date', 'between', "{$data->ini}", "{$data->end}"); // create the filter
-            TSession::setValue(__CLASS__.'_filter_date',   $filter); // stores the filter in the session
+        if (isset($data->acron) AND ($data->acron)) {
+            $filter = new TFilter('acron', 'like', "%{$data->acron}%"); // create the filter
+            TSession::setValue(__CLASS__.'_filter_acron',   $filter); // stores the filter in the session
         }
 
         
@@ -253,46 +190,26 @@ class FootballLeagueList extends TPage
             // open a transaction with database 'app'
             TTransaction::open('app');
             
-            // creates a repository for FootballLeague
-            $repository = new TRepository('FootballLeague');
+            // creates a repository for ViewTableOdd
+            $repository = new TRepository('ViewTableOddBrasileirao');
             $limit = 10;
             // creates a criteria
             $criteria = new TCriteria;
             
-            // default order
-            if (empty($param['order']))
-            {
-                $param['order'] = 'id';
-                $param['direction'] = 'asc';
-            }
             $criteria->setProperties($param); // order, offset
             $criteria->setProperty('limit', $limit);
             
-
-            if (TSession::getValue(__CLASS__.'_filter_id')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_id')); // add the session filter
-            }
-
-
-            if (TSession::getValue(__CLASS__.'_filter_name')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_name')); // add the session filter
-            }
-
 
             if (TSession::getValue(__CLASS__.'_filter_slug')) {
                 $criteria->add(TSession::getValue(__CLASS__.'_filter_slug')); // add the session filter
             }
 
 
-            if (TSession::getValue(__CLASS__.'_filter_continent')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_continent')); // add the session filter
+            if (TSession::getValue(__CLASS__.'_filter_acron')) {
+                $criteria->add(TSession::getValue(__CLASS__.'_filter_acron')); // add the session filter
             }
 
-            if (TSession::getValue(__CLASS__.'_filter_date')) {
-                $criteria->add(TSession::getValue(__CLASS__.'_filter_date')); // add the session filter
-            }
-
-            $criteria->add(new TFilter('status','<=',2));
+            
             // load the objects according to criteria
             $objects = $repository->load($criteria, FALSE);
             
@@ -307,11 +224,6 @@ class FootballLeagueList extends TPage
                 // iterate the collection of active records
                 foreach ($objects as $object)
                 {
-                    if (isset($object->shield)) {
-                        $image = new TImage("tmp/shield_football_league/{$object->shield}");
-                        $image->style = 'width: 30px';
-                        $object->shield = $image;
-                    }
                     // add the object inside the datagrid
                     $this->datagrid->addItem($object);
                 }
@@ -358,7 +270,7 @@ class FootballLeagueList extends TPage
         {
             $key=$param['key']; // get the parameter $key
             TTransaction::open('app'); // open a transaction with database
-            $object = new FootballLeague($key, FALSE); // instantiates the Active Record
+            $object = new ViewTableOdd($key, FALSE); // instantiates the Active Record
             $object->delete(); // deletes the object from the database
             TTransaction::close(); // close the transaction
             
@@ -392,5 +304,4 @@ class FootballLeagueList extends TPage
         }
         parent::show();
     }
-    
 }

@@ -24,9 +24,10 @@ class FootballLeagueForm extends TPage
 
         // create the form fields
         $id = new THidden('id');
-        $name = new TEntry('name');
+        $league = new TDBUniqueSearch('league_id','app','League','id','slug');
+        $league->addValidation('Campeonato', new TRequiredValidator);
+        $league->setMinLength(1);
         $season = new TEntry('season');
-        $slug = new TEntry('slug');
         $shield = new TFile('shield');
         $shield->setAllowedExtensions( ['png', 'jpg', 'jpeg'] );
         $continent = new TEntry('continent');
@@ -39,8 +40,8 @@ class FootballLeagueForm extends TPage
             '3' => 'Finalizado',
             '4' => 'Cancelado'
         ]);
-        $created_at = new TDate('created_at');
-        $updated_at = new TDate('updated_at');
+        $date_ini = new TDate('date_ini');
+        $date_end = new TDate('date_end');
 
         $this->frame = new TElement('div');
         $this->frame->id = 'shield_frame';
@@ -50,13 +51,14 @@ class FootballLeagueForm extends TPage
 
         // add the fields
         $this->form->addFields( [ $id ] );
-        $row = $this->form->addFields( [ new TLabel('Nome'), $name ], [ new TLabel('Temporada'), $season ] );
+        $row = $this->form->addFields( [ new TLabel('Tipo campeonato'), $league ], [ new TLabel('Temporada'), $season ] );
         $row->layout = ['col-sm-8','col-sm-4'];
-        $this->form->addFields( [ new TLabel('Slug'), $slug ] );
-        $this->form->addFields( [ new TLabel('Escudo'), $shield ] );
-        $this->form->addFields( [ new TLabel(''), $this->frame ] );
+        $row = $this->form->addFields( [ new TLabel('Inicio'), $date_ini ], [ new TLabel('Final'), $date_end ] );
+        $row->layout = ['col-sm-6','col-sm-6'];
         $this->form->addFields( [ new TLabel('Continente'), $continent ] );
         $this->form->addFields( [ new TLabel('status'), $status ] );
+        $this->form->addFields( [ new TLabel('Escudo'), $shield ] );
+        $this->form->addFields( [ new TLabel(''), $this->frame ] );
 
 
         if (!empty($id))

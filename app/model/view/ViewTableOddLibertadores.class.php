@@ -1,11 +1,11 @@
 <?php
 /**
- * ViewTableOdd Active Record
+ * ViewTableOddLibertadores Active Record
  * @author  <your-name-here>
  */
-class ViewTableOdd extends TRecord
+class ViewTableOddLibertadores extends TRecord
 {
-    const TABLENAME = 'view_table_odd';
+    const TABLENAME = 'view_table_odd_libertadores';
     const PRIMARYKEY= 'soccer_team_id';
     const IDPOLICY =  'max'; // {max, serial}
     
