@@ -80,7 +80,7 @@ class SoccerMatchList extends TPage
 
         // creates the datagrid columns
         $column_id = new TDataGridColumn('id', 'Id', 'left');
-        $column_football_league_id = new TDataGridColumn('football_league->slug', 'Liga', 'left');
+        $column_football_league_id = new TDataGridColumn('football_league->league->slug', 'Liga', 'left');
         $column_soccer_team_master_id = new TDataGridColumn('soccer_team_master->slug', 'Mandante', 'left');
         $column_soccer_team_visiting_id = new TDataGridColumn('soccer_team_visiting->slug', 'Visitante', 'left');
         $column_hour = new TDataGridColumn('hour', 'Horario ', 'right');
