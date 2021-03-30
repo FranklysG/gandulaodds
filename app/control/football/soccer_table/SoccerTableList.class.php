@@ -71,10 +71,10 @@ class SoccerTableList extends TPage
         $column_updated_at = new TDataGridColumn('updated_at', 'Ultima atualização', 'right');
 
         $column_created_at->setTransformer(function($value){
-            return Convert::toDateBR($value);
+            return Convert::toDate($value, 'd/m/Y');
         });
         $column_updated_at->setTransformer(function($value){
-            return Convert::toDateBR($value);
+            return Convert::toDate($value, 'd/m/Y');
         });
 
 

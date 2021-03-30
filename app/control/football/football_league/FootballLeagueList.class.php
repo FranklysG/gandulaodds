@@ -112,11 +112,11 @@ class FootballLeagueList extends TPage
         });
         
         $column_created_at->setTransformer(function($value){
-            return Convert::toDateBR($value);
+            return Convert::toDate($value, 'd/m/Y');
         });
 
         $column_updated_at->setTransformer(function($value){
-            return Convert::toDateBR($value);
+            return Convert::toDate($value, 'd/m/Y');
         });
 
         // add the columns to the DataGrid
