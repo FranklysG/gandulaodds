@@ -63,8 +63,8 @@ class GameMatchToDay extends TPage
                             'soccer_team_visiting' => $value->soccer_team_visiting->slug,
                             'soccer_team_visiting_shield' => $value->soccer_team_visiting->shield,
                             'soccer_team_visiting_score' => $value->score_visiting,
-                            'soccer_match_hour' => Convert::toHourBR($value->hour),
-                            'soccer_match_date' => Convert::toDateBR($value->date),
+                            'soccer_match_date' => Convert::toDate($value->date, 'd M'),
+                            'soccer_match_hour' => Convert::toDate($value->hour, 'H:i'),
                             'soccer_match_status' => [[
                                 'class' => $class,
                                 'label' => $label
@@ -73,7 +73,7 @@ class GameMatchToDay extends TPage
                     }
                     $football_league['football_league'][] = array(
                         'id' => $object->id,
-                        'football_league_slug' => $object->slug,
+                        'football_league_slug' => $object->league->slug,
                         'match' => $data
                     );
 

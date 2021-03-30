@@ -11,6 +11,7 @@ class FootballLeague extends TRecord
     
     
     private $soccer_matchs;
+    private $league;
 
     /**
      * Constructor method

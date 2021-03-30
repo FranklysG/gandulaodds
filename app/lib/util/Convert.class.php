@@ -120,40 +120,10 @@ class Convert
     }
 
     // de datas US para BR
-    public static function toDateBR($value)
+    public static function toDate($value, String $format = 'd/m/Y')
     {
         $date = new DateTime($value);
-        return $date->format('d/m/Y');
-    }
-
-    public static function toDatTimeUS($value)
-    {
-        $date = new DateTime($value);
-        return $date->format('Y-m-d');
-    }
-
-    public static function toDateTimeBR($value)
-    {
-        $date = new DateTime($value);
-        return $date->format('d/m/Y H:i:s');
-    }
-    
-    public static function toHourBR($value)
-    {
-        $date = new DateTime($value);
-        return $date->format('H:i');
-    }
-    
-    public static function toDayMonthString($value)
-    {
-        $date = new DateTime($value);
-        return $date->format('d M');
-    }
-    
-    public static function toYear($value)
-    {
-        $date = new DateTime($value);
-        return $date->format('Y');
+        return $date->format($format);
     }
 
     // pegar o mes o dia ou ano da data us
