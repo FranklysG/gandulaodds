@@ -1,0 +1,43 @@
+<!--[main]-->
+<!--[football_league]-->
+<div class="container p-2" style="font-size: 12px;">
+    <div class="row p-2">
+        <div class="football_league_title" style="font-size: 14px;font-weight: 600;"> {$football_league_slug}</div>
+    </div>
+    <div class="row">
+        <!--[match]-->
+        <div class="col-sm-3 text-center card p-1 m-1">
+            <div class="row p-1 card-body">
+                <div class="col-sm-4 font-weight-normal">Futebol</div>
+                <!--[soccer_match_status]-->
+                <div class="col-sm-4 font-weight-normal btn btn-{$class}" style="padding: 0px 10px;">{$label}</div>
+                <!--[/soccer_match_status]-->
+                <div class="col-sm-4 font-weight-normal">{$soccer_match_hour}</div>
+            </div>
+            <div class="row p-1 card-body" style="line-height: 3em;">
+                <div class="col-sm-4"><img class="w-50 img img-responsive d-inline-block"
+                        src="tmp/shield_soocer_team/{$soccer_team_master_shield}"></div>
+                <div class="col-sm-4 font-weight-bold" style="font-size: 15px;">
+                    <span class="font-weight-bold pt-1">{$soccer_team_master_score}</span>
+                    <span class="font-weight-bold pt-1">X</span>
+                    <span class="font-weight-bold pt-1">{$soccer_team_visiting_score}</span>
+                </div>
+                <div class="col-sm-4"><img class="w-50 img img-responsive  d-inline-block"
+                        src="tmp/shield_soocer_team/{$soccer_team_visiting_shield}"></div>
+            </div>
+            <div class="row p-1 card-body">
+                <div class="col-sm-4 font-weight-bold">{$soccer_team_master}</div>
+                <div class="col-sm-4"> - </div>
+                <div class="col-sm-4 font-weight-bold">{$soccer_team_visiting}</div>
+            </div>
+            <div class="row p-1 card-body">
+                <div class="col-sm-4"><label class="btn btn-success" style="padding: 1px 9px;">3,15</label></div>
+                <div class="col-sm-4"><label class="btn btn-warning" style="padding: 1px 9px;">4,40</label></div>
+                <div class="col-sm-4"><label class="btn btn-danger" style="padding: 1px 9px;">5,60</label></div>
+            </div>
+        </div>
+        <!--[/match]-->
+    </div>
+</div>
+<!--[/football_league]-->
+<!--[/main]-->

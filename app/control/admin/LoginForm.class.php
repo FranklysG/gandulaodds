@@ -26,7 +26,7 @@ class LoginForm extends TPage
         $this->style = 'clear:both';
         // creates the form
         $this->form = new BootstrapFormBuilder('form_login');
-        $this->form->setFormTitle( 'LOG IN' );
+        $this->form->setFormTitle( '<br><img style="display:inline-block;" src="tmp/gandula_logo/gandula_logo.svg" style="width:210px;">' );
         
         // create the form fields
         $login = new TEntry('login');

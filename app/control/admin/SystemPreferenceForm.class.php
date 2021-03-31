@@ -27,13 +27,8 @@ class SystemPreferenceForm extends TStandardForm
         // cria o formulário
         $this->form = new BootstrapFormBuilder('form_preferences');
         $this->form->setFormTitle(_t('Preferences'));
-        $this->form->setFieldSizes('100%');
+        $this->form->setFieldSizes('70%');
         
-        // especificações da api
-        $url_base = new TEntry('url_base');
-        $token_live = new TEntry('token_live');
-        $token_teste = new TEntry('token_teste');
-
         // cria os campos do formulário
         $mail_domain = new TEntry('mail_domain');
         $smtp_auth   = new TCombo('smtp_auth');
@@ -44,6 +39,21 @@ class SystemPreferenceForm extends TStandardForm
         $mail_from   = new TEntry('mail_from');
         $mail_support= new TEntry('mail_support');
         
+        $logo = new TFile('logo');
+        $logo->setCompleteAction(new TAction(array($this, 'onComplete')));
+        $logo->setAllowedExtensions( ['png', 'jpg', 'jpeg'] );
+
+        $this->frame = new TElement('div');
+        $this->frame->id = 'logo_frame';
+        $this->frame->style = 'width:200px;height:auto;;border:1px solid gray;padding:4px;';
+
+        $nome_ente = new TEntry('nome_ente');
+        $cod_ente = new TEntry('cod_ente');
+        $cod_unid = new TEntry('cod_unid');
+        
+        $link_api = new TEntry('link_api');
+        $link_api->placeholder = "http://app.tce.ma.gov.br/tce/api/";
+        
         $smtp_host->placeholder = 'ssl://smtp.gmail.com, tls://server.company.com';
         
         $yesno = array();
@@ -51,9 +61,6 @@ class SystemPreferenceForm extends TStandardForm
         $yesno['0'] = _t('No');
         $smtp_auth->addItems($yesno);
         
-        $this->form->addFields( [new TLabel('url base')], [$url_base] );
-        $this->form->addFields( [new TLabel('token live')], [$token_live] );
-        $this->form->addFields( [new TLabel('token teste')], [$token_teste] );
         $this->form->addFields( [new TLabel(_t('Mail from'))], [$mail_from] );
         $this->form->addFields( [new TLabel(_t('SMTP Auth'))], [$smtp_auth] );
         $this->form->addFields( [new TLabel(_t('SMTP Host'))], [$smtp_host] );
@@ -61,7 +68,12 @@ class SystemPreferenceForm extends TStandardForm
         $this->form->addFields( [new TLabel(_t('SMTP User'))], [$smtp_user] );
         $this->form->addFields( [new TLabel(_t('SMTP Pass'))], [$smtp_pass] );
         $this->form->addFields( [new TLabel(_t('Support mail'))], [$mail_support] );
-      
+        $this->form->addFields( [new TLabel('Nome da Entidade')], [$nome_ente] );
+        $this->form->addFields( [new TLabel('Codigo da Entidade')], [$cod_ente] );
+        $this->form->addFields( [new TLabel('Codigo da Unidade')], [$cod_unid] );
+        $this->form->addFields( [new TLabel('Link API')], [$link_api] );
+        $this->form->addFields( [new TLabel('Logo')], [$logo] );
+        $this->form->addFields( [new TLabel('')], [$this->frame] );
         
         $btn = $this->form->addAction(_t('Save'), new TAction(array($this, 'onSave')), 'far:save');
         $btn->class = 'btn btn-sm btn-primary';
@@ -86,6 +98,11 @@ class SystemPreferenceForm extends TStandardForm
             $preferences = SystemPreference::getAllPreferences();
             if ($preferences)
             {
+                if (isset($preferences['logo'])) {
+                    $image = new TImage('tmp/'.$preferences['logo']);
+                    $image->style = 'width: 100%';
+                    $this->frame->add($image);
+                }
                 $this->form->setData((object) $preferences);
             } 
             
@@ -148,5 +165,13 @@ class SystemPreferenceForm extends TStandardForm
             // undo all pending operations
             TTransaction::rollback();
         }
+    }
+
+    public static function onComplete($param)
+    {
+        // refresh photo_frame
+        $logo = PATH."/tmp/{$param['logo']}";
+        TScript::create("$('#logo_frame').html('')");
+        TScript::create("$('#logo_frame').append(\"<img style='width:100%' src='$logo'>\");");
     }
 }
