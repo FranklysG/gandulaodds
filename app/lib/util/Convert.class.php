@@ -119,7 +119,7 @@ class Convert
         return $date->format('Y-m-d');
     }
 
-    // de datas US para BR
+    // de datas para datas com formato
     public static function toDate($value, String $format = 'd/m/Y')
     {
         $date = new DateTime($value);
@@ -169,24 +169,6 @@ class Convert
     public static function toLower($str)
     {
         return strtr(strtolower($str), "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÜÚÞß", "àáâãäåæçèéêëìíîïðñòóôõö÷øùüúþÿ");
-    }
-
-    public static function toMask($val, $mask)
-    {
-        $maskared = '';
-        $k = 0;
-        for ($i = 0; $i<=strlen($mask)-1; $i++) {
-            if ($mask[$i] == '#') {
-                if (isset($val[$k])) {
-                    $maskared .= $val[$k++];
-                }
-            } else {
-                if (isset($mask[$i])) {
-                    $maskared .= $mask[$i];
-                }
-            }
-        }
-        return $maskared;
     }
 
     public static function toWindowData($param, $window_name = 'Dados')

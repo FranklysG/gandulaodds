@@ -1,11 +1,11 @@
 <?php
 /**
- * ViewTableOddChampionsLeague Active Record
+ * ViewTableOddBrasileirao Active Record
  * @author  <your-name-here>
  */
-class ViewTableOddChampionsLeague extends TRecord
+class ViewTableOdd extends TRecord
 {
-    const TABLENAME = 'view_table_odd_champions_league';
+    const TABLENAME = 'view_table_odd';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
     

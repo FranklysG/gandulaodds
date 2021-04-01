@@ -6,7 +6,7 @@
 class ViewTableOddBrasileirao extends TRecord
 {
     const TABLENAME = 'view_table_odd_brasileirao';
-    const PRIMARYKEY= 'soccer_team_id';
+    const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
     
     
