@@ -1,4 +1,4 @@
--- CREATE OR REPLACE VIEW `view_table_odd_champions_league` AS
+CREATE OR REPLACE VIEW `view_table_odd_libertadores` AS
 SELECT 
 soccer_team.id
 ,soccer_team.slug
@@ -15,8 +15,8 @@ soccer_team.id
 ,IFNULL(format(100*(1/format(round((sum(soccer_table.win*3)+sum(soccer_table.draw*1))/((sum(soccer_table.win)+sum(soccer_table.draw)+sum(soccer_table.los))*3),5)*100,1)),2), 2.00) as odds
 FROM soccer_table
 INNER JOIN soccer_team on soccer_team.id = soccer_table.soccer_team_id
-INNER JOIN soccer_match on soccer_match.id = soccer_table.soccer_match_id
-INNER JOIN football_league on football_league.id = soccer_match.football_league_id AND football_league.status = 1
-INNER JOIN league on league.id = football_league.league_id AND league.id = 3
+INNER JOIN soccer_match on soccer_match.id = soccer_table.soccer_match_id AND soccer_match.status = 4 -- status finalizado
+INNER JOIN football_league on football_league.id = soccer_match.football_league_id AND football_league.status = 1 -- status iniciado
+INNER JOIN league on league.id = football_league.league_id AND league.id = 2
 GROUP BY soccer_team.id
 ORDER BY pts DESC

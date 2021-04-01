@@ -132,45 +132,26 @@ class SoccerMatchForm extends TPage
                 $score_table_visiting->soccer_match_id = $object->id;
 
                 if($data->score_master == $data->score_visiting){
-                    $score_table_master->win = 0;
                     $score_table_master->draw = 1;
-                    $score_table_master->los = 0;
-                    $score_table_master->pro_goal = $data->score_master;
-                    $score_table_master->own_goal = $data->score_visiting;          
-    
-                    $score_table_visiting->win = 0;
                     $score_table_visiting->draw = 1;
-                    $score_table_visiting->los = 0;
-                    $score_table_visiting->pro_goal = $data->score_visiting;
-                    $score_table_visiting->own_goal = $data->score_master;
-                }
-                if($data->score_master > $data->score_visiting){
+                    if(($data->score_master == 0 ) and ($data->score_visiting == 0)){
+                        $score_table_master->draw = 0;
+                        $score_table_visiting->draw = 0;
+                    }
+ 
+                }else if($data->score_master > $data->score_visiting){
                     $score_table_master->win = 1;
-                    $score_table_master->draw = 0;
-                    $score_table_master->los = 0;
-                    $score_table_master->pro_goal = $data->score_master;
-                    $score_table_master->own_goal = $data->score_visiting;          
-    
-                    $score_table_visiting->win = 0;
-                    $score_table_visiting->draw = 0;
                     $score_table_visiting->los = 1;
-                    $score_table_visiting->pro_goal = $data->score_visiting;
-                    $score_table_visiting->own_goal = $data->score_master;
-                }
-                if($data->score_master < $data->score_visiting){
-                    $score_table_master->win = 0;
-                    $score_table_master->draw = 0;
-                    $score_table_master->los = 1;
-                    $score_table_master->pro_goal = $data->score_master;
-                    $score_table_master->own_goal = $data->score_visiting;          
-    
+
+                }else if($data->score_master < $data->score_visiting){
+                    $score_table_master->los = 1;     
                     $score_table_visiting->win = 1;
-                    $score_table_visiting->draw = 0;
-                    $score_table_visiting->los = 0;
-                    $score_table_visiting->pro_goal = $data->score_visiting;
-                    $score_table_visiting->own_goal = $data->score_master;
                 }
 
+                $score_table_master->pro_goal = $data->score_master;
+                $score_table_master->own_goal = $data->score_visiting; 
+                $score_table_visiting->pro_goal = $data->score_visiting;
+                $score_table_visiting->own_goal = $data->score_master;
                 $score_table_master->store();
                 $score_table_visiting->store();
 

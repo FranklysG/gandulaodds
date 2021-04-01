@@ -30,20 +30,19 @@ class GameMatchToDay extends TPage
                     foreach ($object->getSoccerMatchs() as $value) {
                         $team_master = ViewTableOdd::find($value->soccer_team_master->id);
                         $team_visiting = ViewTableOdd::find($value->soccer_team_visiting->id);
-                        $team_master_visiting = abs($team_master->ap - $team_visiting->ap);
 
-                        if(($team_master->v < 1) and ($team_visiting->v < 1)){
-                            $team_master = '0.00';
-                            $team_master_visiting = '0.00';
-                            $team_visiting = '0.00';
-                        }else{
+                        if(is_object($team_master) and is_object($team_visiting)){
                             $team_master = $team_master->odds;
-                            if($team_master_visiting > 0){
-                                $team_master_visiting = (100 / $team_master_visiting);
-                            }
+                            $team_master_win = ((1/$team_master)*100);
                             $team_visiting = $team_visiting->odds;
+                            $team_visiting_win = ((1/$team_visiting)*100);
+                            $team_master_visiting_win = number_format(abs($team_master_win-$team_visiting_win)/100, 3,'.','')*10;
+                        }else{
+                            $team_master = '0.00';
+                            $team_master_visiting_win = '0.00';
+                            $team_visiting = '0.00';
                         }
-
+                        
                         switch ($value->status) {
                             case 1:
                                 $class = 'success';
@@ -76,7 +75,7 @@ class GameMatchToDay extends TPage
                             'soccer_team_master_shield' => $value->soccer_team_master->shield,
                             'soccer_team_master_score' => $value->score_master,
                             'soccer_team_master_odd' => $team_master,
-                            'soccer_team_master_visiting_odd' => $team_master_visiting,
+                            'soccer_team_master_visiting_odd' => $team_master_visiting_win,
                             'soccer_team_visiting' => $value->soccer_team_visiting->slug,
                             'soccer_team_visiting_shield' => $value->soccer_team_visiting->shield,
                             'soccer_team_visiting_score' => $value->score_visiting,
