@@ -28,7 +28,8 @@ class GameMatchToDay extends TPage
                 foreach ($objects as $object) {
                     $data = array();
                     foreach ($object->getSoccerMatchs() as $value) {
-                        if(Convert::toDate($value->date,'Y-m-d') == date('Y-m-d')){
+                        $date = Convert::toDate($value->date,'Y-m-d');
+                        if($date == date('Y-m-d')){
                             $team_master = ViewTableOdd::find($value->soccer_team_master->id);
                             $team_visiting = ViewTableOdd::find($value->soccer_team_visiting->id);
 
