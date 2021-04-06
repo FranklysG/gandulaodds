@@ -1,25 +1,23 @@
 <?php
 /**
- * GameMatchToDay
- *
- * @version    1.0
- * @package    control
- * @subpackage public
- * @author     Pablo Dall'Oglio
- * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
- * @license    http://www.adianti.com.br/framework-license
+ * SoccerMatch REST service
  */
 
-
-class GameMatchToDay extends TPage
+class SoccerMatchRestService extends AdiantiRecordService
 {
-    public function __construct()
+    const DATABASE      = 'permission';
+    const ACTIVE_RECORD = '';
+
+    public static function getGame($param = null)
     {
-        parent::__construct();
         try {
             TTransaction::open('app');
             $criteria = new TCriteria;
             $criteria->add(new TFilter('status','=',1));
+            if(!empty($param['id'])){
+                $criteria->add(new TFilter('id','=',$param['id']));
+            }
+            
             $repository = new TRepository('FootballLeague');
             $objects = $repository->load($criteria);
             
@@ -93,16 +91,14 @@ class GameMatchToDay extends TPage
                     $football_league['football_league'][] = array(
                         'id' => $object->id,
                         'football_league_slug' => $object->league->slug,
-                        'match' => $data
+                        'soccer_match' => $data
                     );
-                    
+
                 }
             }
 
+            return $football_league;
             TTransaction::close();
-            $header = new THtmlRenderer('app/resources/app/soccer_match.html');
-            $header->enableSection('main', $football_league);
-            parent::add($header);
         } catch (Exeption $e) {
             new TMessage('warning', $e->getMessage());
         }

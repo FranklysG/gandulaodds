@@ -179,3 +179,16 @@ RewriteRule ^users$ rest.php?class=SystemUserRestService&method=handle&%{QUERY_S
 RewriteRule ^user-groups/([A-Za-z0-9]*)$ rest.php?class=SystemUserGroupRestService&method=handle&id=$1&%{QUERY_STRING} [NC]
 RewriteRule ^user-groups/([A-Za-z-_0-9]*)/([A-Za-z-_0-9]*)$ rest.php?class=SystemUserGroupRestService&method=$2&id=$1&%{QUERY_STRING} [NC]
 RewriteRule ^user-groups$ rest.php?class=SystemUserGroupRestService&method=handle&%{QUERY_STRING} [NC]
+
+#RESTFUL routes get application
+RewriteRule ^v1/soccer/([A-Za-z0-9]*)$ rest.php?class=SoccerMatchRestService&method=getGame&id=$1&%{QUERY_STRING} [NC]
+RewriteRule ^v1/soccer/([A-Za-z-_0-9]*)/([A-Za-z-_0-9]*)$ rest.php?class=SoccerMatchRestService&method=$2&id=$1&%{QUERY_STRING} [NC]
+RewriteRule ^v1/soccer$ rest.php?class=SoccerMatchRestService&method=getGame&%{QUERY_STRING} [NC]
+
+RewriteRule ^v1/team/([A-Za-z0-9]*)$ rest.php?class=SoccerTeamRestService&method=handle&id=$1&%{QUERY_STRING} [NC]
+RewriteRule ^v1/team/([A-Za-z-_0-9]*)/([A-Za-z-_0-9]*)$ rest.php?class=SoccerTeamRestService&method=$2&id=$1&%{QUERY_STRING} [NC]
+RewriteRule ^v1/team$ rest.php?class=SoccerTeamRestService&method=handle&%{QUERY_STRING} [NC]
+
+RewriteRule ^v1/champion/([A-Za-z0-9]*)$ rest.php?class=FootballLeagueRestService&method=handle&id=$1&%{QUERY_STRING} [NC]
+RewriteRule ^v1/champion/([A-Za-z-_0-9]*)/([A-Za-z-_0-9]*)$ rest.php?class=FootballLeagueRestService&method=$2&id=$1&%{QUERY_STRING} [NC]
+RewriteRule ^v1/champion$ rest.php?class=FootballLeagueRestService&method=handle&%{QUERY_STRING} [NC]

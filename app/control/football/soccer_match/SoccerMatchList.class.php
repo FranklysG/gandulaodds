@@ -358,6 +358,8 @@ class SoccerMatchList extends TPage
 
             if (TSession::getValue(__CLASS__.'_filter_date')) {
                 $criteria->add(TSession::getValue(__CLASS__.'_filter_date')); // add the session filter
+            }else{
+                $criteria->add(new TFilter('date(date)', '=', date('Y-m-d')));
             }
 
             // load the objects according to criteria
