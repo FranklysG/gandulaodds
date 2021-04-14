@@ -35,7 +35,7 @@ class SoccerMatchRestService extends AdiantiRecordService
                                 $team_master_win = ((1/$team_master)*100);
                                 $team_visiting = $team_visiting->odds;
                                 $team_visiting_win = ((1/$team_visiting)*100);
-                                $team_master_visiting_win = number_format(abs($team_master_win-$team_visiting_win)/100, 3,'.','')*10;
+                                $team_master_visiting_win = number_format(round(((($team_master_win-$team_visiting_win)/100)*10),2),3,'.','');    
                             }else{
                                 $team_master = '0.00';
                                 $team_master_visiting_win = '0.00';
@@ -70,6 +70,7 @@ class SoccerMatchRestService extends AdiantiRecordService
                                     break;
                             }
                             $data[] = array(
+                                'soccer_team_id' => $value->id,
                                 'soccer_team_master' => $value->soccer_team_master->slug,
                                 'soccer_team_master_shield' => $value->soccer_team_master->shield,
                                 'soccer_team_master_score' => $value->score_master,
@@ -88,15 +89,18 @@ class SoccerMatchRestService extends AdiantiRecordService
                             ); 
                         }
                     }
-                    $football_league['football_league'][] = array(
-                        'id' => $object->id,
-                        'football_league_slug' => $object->league->slug,
-                        'soccer_match' => $data
-                    );
-
+                    $football_league_verify = SoccerMatch::where('football_league_id','=',$object->id)->where('date(date)','=',date('Y-m-d'))->load();
+                    $football_league_verify = array_shift($football_league_verify);
+                    if(!empty($football_league_verify)){
+                        $football_league['football_league'][] = array(
+                            'football_league_id' => $object->id,
+                            'football_league_slug' => $object->league->slug,
+                            'soccer_match' => $data
+                        );
+                    }
                 }
             }
-
+            $football_league = array_filter($football_league);
             return $football_league;
             TTransaction::close();
         } catch (Exeption $e) {

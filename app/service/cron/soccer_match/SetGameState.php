@@ -26,7 +26,7 @@ class SetGameState extends TPage
             $criteria = new TCriteria;
             $criteria->add(new TFilter('status','=',0));
             $criteria->add(new TFilter('date_format(date, "%Y-%m-%d")','=',date('Y-m-d')));
-            $criteria->add(new TFilter('date_format(hour, "%H:%i")','=',date('H:i')));
+            $criteria->add(new TFilter('date_format(hour, "%H:%i")','<=',date('H:i')));
             $repository = new TRepository('SoccerMatch');
             $objects = $repository->load($criteria);
             if(isset($objects)){

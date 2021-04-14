@@ -20,6 +20,10 @@ class GameMatchToDay extends TPage
             TTransaction::open('app');
             $criteria = new TCriteria;
             $criteria->add(new TFilter('status','=',1));
+            if(!empty($param['id'])){
+                $criteria->add(new TFilter('id','=',$param['id']));
+            }
+            
             $repository = new TRepository('FootballLeague');
             $objects = $repository->load($criteria);
             
@@ -28,8 +32,7 @@ class GameMatchToDay extends TPage
                 foreach ($objects as $object) {
                     $data = array();
                     foreach ($object->getSoccerMatchs() as $value) {
-                        $date = Convert::toDate($value->date,'Y-m-d');
-                        if($date == date('Y-m-d')){
+                        if(Convert::toDate($value->date,'Y-m-d') == date('Y-m-d')){
                             $team_master = ViewTableOdd::find($value->soccer_team_master->id);
                             $team_visiting = ViewTableOdd::find($value->soccer_team_visiting->id);
 
@@ -47,7 +50,7 @@ class GameMatchToDay extends TPage
                             
                             switch ($value->status) {
                                 case 1:
-                                    $class = 'success';
+                                    $class = 'success animate-live-fading';
                                     $label = 'Ao vivo';
                                     break;
                                 case 2:
@@ -73,6 +76,7 @@ class GameMatchToDay extends TPage
                                     break;
                             }
                             $data[] = array(
+                                'soccer_team_id' => $value->id,
                                 'soccer_team_master' => $value->soccer_team_master->slug,
                                 'soccer_team_master_shield' => $value->soccer_team_master->shield,
                                 'soccer_team_master_score' => $value->score_master,
@@ -91,16 +95,20 @@ class GameMatchToDay extends TPage
                             ); 
                         }
                     }
-                    $football_league['football_league'][] = array(
-                        'id' => $object->id,
-                        'football_league_slug' => $object->league->slug,
-                        'match' => $data
-                    );
-                    
+                    $football_league_verify = SoccerMatch::where('football_league_id','=',$object->id)->where('date(date)','=',date('Y-m-d'))->load();
+                    $football_league_verify = array_shift($football_league_verify);
+                    if(!empty($football_league_verify)){
+                        $football_league['football_league'][] = array(
+                            'football_league_id' => $object->id,
+                            'football_league_slug' => $object->league->slug,
+                            'soccer_match' => $data
+                        );
+                    }
                 }
             }
 
             TTransaction::close();
+            $football_league = array_filter($football_league);
             $header = new THtmlRenderer('app/resources/app/soccer_match.html');
             $header->enableSection('main', $football_league);
             parent::add($header);

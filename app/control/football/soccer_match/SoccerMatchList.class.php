@@ -329,7 +329,7 @@ class SoccerMatchList extends TPage
             // default order
             if (empty($param['order']))
             {
-                $param['order'] = 'id';
+                $param['order'] = 'date';
                 $param['direction'] = 'asc';
             }
             $criteria->setProperties($param); // order, offset
