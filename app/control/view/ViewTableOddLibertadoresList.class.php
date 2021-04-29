@@ -192,7 +192,7 @@ class ViewTableOddLibertadoresList extends TPage
             
             // creates a repository for ViewTableOdd
             $repository = new TRepository('ViewTableOddLibertadores');
-            $limit = 10;
+            $limit = 32;
             // creates a criteria
             $criteria = new TCriteria;
             

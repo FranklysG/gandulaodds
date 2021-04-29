@@ -192,7 +192,7 @@ class ViewTableOddBrasileiraoList extends TPage
             
             // creates a repository for ViewTableOdd
             $repository = new TRepository('ViewTableOddBrasileirao');
-            $limit = 10;
+            $limit = 20;
             // creates a criteria
             $criteria = new TCriteria;
             
