@@ -28,8 +28,10 @@ class SoccerMatchList extends TPage
         // create the form fields
         $criteria = new TCriteria;
         $criteria->add(new TFilter('status','=',1));
-        $football_league_id = new TDBUniqueSearch('football_league_id','app','FootballLeague','id','slug',null,$criteria);
-        $football_league_id->setMinLength(1);
+        $football_league_id = new TDBUniqueSearch('football_league_id','app','FootballLeague','id','league_id',null,$criteria);
+        $football_league_id->addValidation('Campeonato', new TRequiredValidator);
+        $football_league_id->setMask('{league->slug}');
+        $football_league_id->setMinLength(0);
         $soccer_team_master_id = new TDBUniqueSearch('soccer_team_master_id','app','SoccerTeam','id','slug');
         $soccer_team_master_id->setMinLength(1);
         $soccer_team_visiting_id = new TDBUniqueSearch('soccer_team_visiting_id','app','SoccerTeam','id','slug');
