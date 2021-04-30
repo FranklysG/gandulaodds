@@ -369,6 +369,19 @@ class AppUtil
         return $novo_texto; // Retorna o valor formatado
      }
 
+    // fazendo o cu da url            
+    public static function url_get_contents ($url) {
+        if (!function_exists('curl_init')){
+            die('CURL is not installed!');
+        }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($output);
+    }
+
      public static function paste_another_folder($img_name, $sub_folder){
         $source_file   = 'tmp/'.$img_name;
         $target_path   = 'tmp/'.$sub_folder;
