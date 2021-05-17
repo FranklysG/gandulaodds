@@ -29,12 +29,7 @@ Class UpdateScoreTable extends TPage {
 
                     if($data->score_master == $data->score_visiting){
                         $score_table_master->draw = 1;
-                        $score_table_visiting->draw = 1;
-                        if(($data->score_master == 0 ) and ($data->score_visiting == 0)){
-                            $score_table_master->draw = 0;
-                            $score_table_visiting->draw = 0;
-                        }
-    
+                        $score_table_visiting->draw = 1;    
                     }else if($data->score_master > $data->score_visiting){
                         $score_table_master->win = 1;
                         $score_table_visiting->los = 1;
@@ -53,7 +48,7 @@ Class UpdateScoreTable extends TPage {
                 }
             }
             
-            new TMessage('info', 'ScoreTable Atualizada');
+            new TMessage('info', 'ScoreTable Atualizada', new TAction(['SoccerMatchList','onReload']));
             TTransaction::close();
         }
         catch (Exception $e)
